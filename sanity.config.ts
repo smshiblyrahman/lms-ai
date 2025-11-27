@@ -27,6 +27,8 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
     // Mux video input plugin
     // https://www.sanity.io/plugins/sanity-plugin-mux-input
-    muxInput(),
+    muxInput({
+      defaultSigned: true,
+    }),
   ],
 });
