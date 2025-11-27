@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "schema:extract": "sanity schema extract --output-path ./schema.json",
+    "typegen": "./node_modules/@sanity/cli/bin/sanity typegen generate",
+    "types:generate": "npm run schema:extract && npm run typegen",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@sanity/image-url": "^1.2.0",
@@ -16,6 +20,7 @@
     "@sanity/vision": "^4.19.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "groq": "3.88.1-typegen-experimental.0",
     "lucide-react": "^0.555.0",
     "next": "16.0.5",
     "next-sanity": "^11.6.10",
@@ -27,6 +32,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
+    "@sanity/cli": "3.88.1-typegen-experimental.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
