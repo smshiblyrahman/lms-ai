@@ -1,4 +1,4 @@
-import { PlayIcon } from "@sanity/icons";
+import { PlayIcon, VideoIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const lessonType = defineType({
@@ -8,6 +8,7 @@ export const lessonType = defineType({
   icon: PlayIcon,
   groups: [
     { name: "content", title: "Content", icon: PlayIcon, default: true },
+    { name: "video", title: "Video", icon: VideoIcon },
     { name: "settings", title: "Settings" },
     { name: "completion", title: "Completion" },
   ],
@@ -46,7 +47,7 @@ export const lessonType = defineType({
       title: "Video file",
       name: "video",
       type: "mux.video",
-      group: "content",
+      group: ["content", "video"],
       description: "Upload or select a video for this lesson",
     }),
     defineField({
