@@ -11,7 +11,7 @@ export function CreateNoteButton() {
   const handleCreateNote = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     startTransition(async () => {
-      // Add a minimum 2 second delay to show the spinner
+      // Add a minimum x second delay to show the spinner
       await Promise.all([
         apply(
           createDocument({
