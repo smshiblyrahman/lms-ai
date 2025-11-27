@@ -1,4 +1,4 @@
-import { PlayIcon, VideoIcon } from "@sanity/icons";
+import { PlayIcon, UserIcon, VideoIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const lessonType = defineType({
@@ -10,7 +10,7 @@ export const lessonType = defineType({
     { name: "content", title: "Content", icon: PlayIcon, default: true },
     { name: "video", title: "Video", icon: VideoIcon },
     { name: "settings", title: "Settings" },
-    { name: "completion", title: "Completion" },
+    { name: "completion", title: "Completed By", icon: UserIcon },
   ],
   fields: [
     defineField({

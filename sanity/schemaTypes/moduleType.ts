@@ -1,4 +1,4 @@
-import { BlockContentIcon } from "@sanity/icons";
+import { BlockContentIcon, UserIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const moduleType = defineType({
@@ -14,7 +14,7 @@ export const moduleType = defineType({
       default: true,
     },
     { name: "lessons", title: "Lessons" },
-    { name: "completion", title: "Completion" },
+    { name: "completion", title: "Completed By", icon: UserIcon },
   ],
   fields: [
     defineField({

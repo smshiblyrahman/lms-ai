@@ -1,4 +1,4 @@
-import { BookIcon } from "@sanity/icons";
+import { BookIcon, UserIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const courseType = defineType({
@@ -10,7 +10,7 @@ export const courseType = defineType({
     { name: "details", title: "Details", icon: BookIcon, default: true },
     { name: "modules", title: "Modules" },
     { name: "settings", title: "Settings" },
-    { name: "completion", title: "Completion" },
+    { name: "completion", title: "Completed By", icon: UserIcon },
   ],
   fields: [
     defineField({
