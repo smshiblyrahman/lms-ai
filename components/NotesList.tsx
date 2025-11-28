@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
 import { useDocuments } from "@sanity/sdk-react";
-import { NoteCard } from "@/components/NoteCard";
+import { Suspense } from "react";
 import { CreateNoteButton } from "@/components/CreateNoteButton";
+import { NoteCard } from "@/components/NoteCard";
 
 // Fallback component that matches NoteCard dimensions to prevent layout shift
 function NoteCardSkeleton() {

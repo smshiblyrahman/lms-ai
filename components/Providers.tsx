@@ -1,10 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import LoadingSpinner from "./LoadingSpinner";
 
 const SanityAppProvider = dynamic(
   () => import("@/components/SanityAppProvider"),
-  { ssr: false, loading: () => <div>Loading Sanity App...</div> },
+  {
+    ssr: false,
+    loading: () => <LoadingSpinner text="Loading Sanity App..." />,
+  },
 );
 
 export function Providers({ children }: { children: React.ReactNode }) {

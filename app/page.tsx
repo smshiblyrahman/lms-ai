@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="min-h-screen p-8">
@@ -8,7 +10,17 @@ export default function Home() {
         </p>
 
         <div className="grid gap-4">
-          <a
+          <Link
+            href="/admin"
+            className="border rounded-lg p-6 hover:shadow-md transition-shadow"
+          >
+            <h2 className="text-xl font-semibold mb-2">🔒 Admin</h2>
+            <p className="text-muted-foreground">
+              Create and edit content in Sanity Studio
+            </p>
+          </Link>
+
+          <Link
             href="/notes"
             className="border rounded-lg p-6 hover:shadow-md transition-shadow"
           >
@@ -16,9 +28,9 @@ export default function Home() {
             <p className="text-muted-foreground">
               View and test realtime note updates
             </p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/studio"
             className="border rounded-lg p-6 hover:shadow-md transition-shadow"
           >
@@ -26,7 +38,7 @@ export default function Home() {
             <p className="text-muted-foreground">
               Create and edit content in Sanity Studio
             </p>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
