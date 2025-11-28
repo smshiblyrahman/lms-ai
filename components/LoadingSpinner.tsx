@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 interface LoadingSpinnerProps {
   text?: string;
   size?: "sm" | "md" | "lg";
+  isFullScreen?: boolean;
   className?: string;
 }
 
@@ -19,11 +20,17 @@ const textSizeStyles = {
   lg: "text-lg",
 };
 
-function LoadingSpinner({ text, size = "md", className }: LoadingSpinnerProps) {
+function LoadingSpinner({
+  text,
+  size = "md",
+  isFullScreen = false,
+  className,
+}: LoadingSpinnerProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-3 min-h-screen p-8",
+        "flex items-center justify-center gap-3",
+        isFullScreen && "min-h-screen p-8",
         className,
       )}
     >

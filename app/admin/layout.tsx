@@ -6,7 +6,15 @@ import { Providers } from "@/components/Providers";
 function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <Providers>
-      <Suspense fallback={<LoadingSpinner text="Loading admin..." />}>
+      <Suspense
+        fallback={
+          <LoadingSpinner
+            text="Loading Admin Dashboard..."
+            isFullScreen
+            size="lg"
+          />
+        }
+      >
         <AdminHeader />
         <main>{children}</main>
       </Suspense>

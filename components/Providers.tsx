@@ -7,7 +7,9 @@ const SanityAppProvider = dynamic(
   () => import("@/components/SanityAppProvider"),
   {
     ssr: false,
-    loading: () => <LoadingSpinner text="Loading Sanity App..." />,
+    loading: () => (
+      <LoadingSpinner text="Loading Sanity App SDK..." isFullScreen size="lg" />
+    ),
   },
 );
 
