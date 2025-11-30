@@ -61,8 +61,6 @@ function DocumentActionsContent({
     dataset,
   });
 
-  // Check if published version exists using useQuery with published perspective
-  // useDocument doesn't support perspective, but useQuery does
   const { data: publishedDoc } = useQuery<{
     _id: string;
   } | null>({
@@ -70,6 +68,8 @@ function DocumentActionsContent({
     params: { id: baseId },
     perspective: "published",
   });
+
+  // TODO: Make a useEffect which when unpublished, optimistically set hasPublishedVersion to false until publishedDoc is fetched
 
   console.log("publishedDoc >>>", publishedDoc);
 
