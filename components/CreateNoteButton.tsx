@@ -1,8 +1,8 @@
 "use client";
 
-import { createDocument, useApplyDocumentActions } from "@sanity/sdk-react";
-import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
+import { useApplyDocumentActions, createDocument } from "@sanity/sdk-react";
+import { Loader2 } from "lucide-react";
 
 export function CreateNoteButton() {
   const [isPending, startTransition] = useTransition();
@@ -41,3 +41,4 @@ export function CreateNoteButton() {
     </button>
   );
 }
+

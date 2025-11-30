@@ -6,24 +6,24 @@ export const structure: StructureResolver = (S, context) =>
     .title("LMS Content")
     .items([
       S.listItem()
-        .title("Courses")
+        .title("Course")
         .icon(BookIcon)
-        .child(S.documentTypeList("course").title("Courses")),
+        .child(S.documentTypeList("course").title("Course")),
       S.listItem()
-        .title("Modules")
+        .title("Module")
         .icon(BlockContentIcon)
-        .child(S.documentTypeList("module").title("Modules")),
+        .child(S.documentTypeList("module").title("Module")),
       S.listItem()
-        .title("Lessons")
+        .title("Lesson")
         .icon(PlayIcon)
-        .child(S.documentTypeList("lesson").title("Lessons")),
+        .child(S.documentTypeList("lesson").title("Lesson")),
       S.divider(),
       S.listItem()
-        .title("Categories")
+        .title("Category")
         .icon(TagIcon)
         .child(
           S.documentTypeList("category")
-            .title("Categories")
+            .title("Category")
             .child((categoryId) =>
               S.list()
                 .title("Category")
@@ -32,22 +32,20 @@ export const structure: StructureResolver = (S, context) =>
                     .title("Category Details")
                     .icon(TagIcon)
                     .child(
-                      S.document()
-                        .schemaType("category")
-                        .documentId(categoryId),
+                      S.document().schemaType("category").documentId(categoryId)
                     ),
                   S.listItem()
-                    .title("Courses in Category")
+                    .title("Course in Category")
                     .icon(BookIcon)
                     .child(
                       S.documentList()
-                        .title("Courses")
+                        .title("Course")
                         .filter(
-                          '_type == "course" && category._ref == $categoryId',
+                          '_type == "course" && category._ref == $categoryId'
                         )
-                        .params({ categoryId }),
+                        .params({ categoryId })
                     ),
-                ]),
-            ),
+                ])
+            )
         ),
     ]);

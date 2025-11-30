@@ -1,17 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import {
-  createDocumentHandle,
-  deleteDocument,
-  discardDocument,
+  useEditDocument,
+  useDocument,
+  useApplyDocumentActions,
   publishDocument,
   unpublishDocument,
-  useApplyDocumentActions,
-  useDocument,
+  deleteDocument,
+  discardDocument,
   useDocumentEvent,
-  useEditDocument,
+  createDocumentHandle,
 } from "@sanity/sdk-react";
-import { useState } from "react";
 import type { Note } from "@/sanity.types";
 
 interface NoteCardProps {
