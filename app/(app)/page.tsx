@@ -1,46 +1,528 @@
 import Link from "next/link";
+import Image from "next/image";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  Play,
+  BookOpen,
+  Code2,
+  Rocket,
+  Crown,
+  CheckCircle2,
+  Star,
+  Users,
+  Layers,
+  Trophy,
+  Sparkles,
+} from "lucide-react";
+import { sanityFetch } from "@/sanity/lib/live";
+import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries";
 
-export default function Home() {
+// Tier color mappings for course cards
+const TIER_GRADIENTS: Record<string, string> = {
+  free: "from-emerald-500 to-teal-600",
+  pro: "from-blue-500 to-indigo-600",
+  ultra: "from-violet-500 to-purple-600",
+};
+
+const TIER_BADGE_COLORS: Record<string, string> = {
+  free: "bg-emerald-500/90",
+  pro: "bg-violet-500/90",
+  ultra: "bg-cyan-500/90",
+};
+
+export default async function Home() {
+  // Fetch featured courses and stats from Sanity
+  const [{ data: courses }, { data: stats }] = await Promise.all([
+    sanityFetch({ query: FEATURED_COURSES_QUERY }),
+    sanityFetch({ query: STATS_QUERY }),
+  ]);
+
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">Sanity App SDK Testing</h1>
-        <p className="text-muted-foreground mb-8">
-          Test the realtime capabilities of the Sanity App SDK
-        </p>
+    <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
+      {/* Animated gradient mesh background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-violet-600/20 rounded-full blur-[120px] animate-pulse" />
+        <div
+          className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-fuchsia-600/15 rounded-full blur-[100px] animate-pulse"
+          style={{ animationDelay: "1s" }}
+        />
+        <div
+          className="absolute top-[40%] right-[20%] w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[80px] animate-pulse"
+          style={{ animationDelay: "2s" }}
+        />
+      </div>
 
-        <div className="grid gap-4">
+      {/* Noise texture overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.015]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* Navigation */}
+      <nav className="relative z-10 flex items-center justify-between px-6 lg:px-12 py-5 max-w-7xl mx-auto">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:shadow-violet-500/40 transition-shadow">
+              <Code2 className="w-5 h-5 text-white" />
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
+              <Play className="w-2 h-2 text-white fill-white" />
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-lg tracking-tight leading-none">
+              SONNY
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+              Academy
+            </span>
+          </div>
+        </Link>
+
+        <div className="hidden md:flex items-center gap-8 text-sm text-zinc-400">
           <Link
-            href="/admin"
-            className="border rounded-lg p-6 hover:shadow-md transition-shadow"
+            href="#courses"
+            className="hover:text-white transition-colors duration-200"
           >
-            <h2 className="text-xl font-semibold mb-2">🔒 Admin</h2>
-            <p className="text-muted-foreground">
-              Create and edit content in Sanity Studio
-            </p>
+            Courses
           </Link>
-
           <Link
-            href="/notes"
-            className="border rounded-lg p-6 hover:shadow-md transition-shadow"
+            href="/pricing"
+            className="hover:text-white transition-colors duration-200"
           >
-            <h2 className="text-xl font-semibold mb-2">📝 Notes Demo</h2>
-            <p className="text-muted-foreground">
-              View and test realtime note updates
-            </p>
+            Pricing
           </Link>
-
           <Link
-            href="/studio"
-            className="border rounded-lg p-6 hover:shadow-md transition-shadow"
+            href="#testimonials"
+            className="hover:text-white transition-colors duration-200"
           >
-            <h2 className="text-xl font-semibold mb-2">🎨 Studio</h2>
-            <p className="text-muted-foreground">
-              Create and edit content in Sanity Studio
-            </p>
+            Reviews
           </Link>
         </div>
-      </div>
+
+        <div className="flex items-center gap-3">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <Button
+                variant="ghost"
+                className="text-zinc-400 hover:text-white hover:bg-white/5"
+              >
+                Sign in
+              </Button>
+            </SignInButton>
+            <Link href="/pricing">
+              <Button className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-lg shadow-violet-600/25">
+                Start Learning
+              </Button>
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <Link href="/admin">
+              <Button
+                variant="ghost"
+                className="text-zinc-400 hover:text-white hover:bg-white/5"
+              >
+                Dashboard
+              </Button>
+            </Link>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "w-9 h-9 ring-2 ring-violet-500/20",
+                },
+              }}
+            />
+          </SignedIn>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <main className="relative z-10">
+        <section className="px-6 lg:px-12 pt-16 pb-24 max-w-7xl mx-auto">
+          <div className="flex flex-col items-center text-center">
+            {/* Badge */}
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 mb-8 animate-fade-in"
+              style={{ animationDelay: "0.1s" }}
+            >
+              <Sparkles className="w-4 h-4 text-violet-400" />
+              <span className="text-sm text-violet-300">
+                Learn to code with real-world projects
+              </span>
+            </div>
+
+            {/* Headline */}
+            <h1
+              className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight leading-[0.95] mb-8 animate-fade-in"
+              style={{ animationDelay: "0.2s" }}
+            >
+              <span className="block text-white">Master coding</span>
+              <span className="block bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
+                the modern way
+              </span>
+            </h1>
+
+            {/* Subheadline */}
+            <p
+              className="text-lg md:text-xl text-zinc-400 max-w-2xl mb-10 leading-relaxed animate-fade-in"
+              style={{ animationDelay: "0.3s" }}
+            >
+              Join Sonny&apos;s Academy and learn from expertly crafted courses,
+              modules, and hands-on lessons. From free fundamentals to{" "}
+              <span className="text-fuchsia-400">Pro exclusives</span> and{" "}
+              <span className="text-cyan-400">Ultra gems</span>.
+            </p>
+
+            {/* CTA Buttons */}
+            <div
+              className="flex flex-col sm:flex-row items-center gap-4 animate-fade-in"
+              style={{ animationDelay: "0.4s" }}
+            >
+              <Link href="/pricing">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-xl shadow-violet-600/30 px-8 h-12 text-base font-semibold"
+                >
+                  <Play className="w-4 h-4 mr-2 fill-white" />
+                  Start Learning Free
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-zinc-700 bg-white/5 hover:bg-white/10 text-white px-8 h-12 text-base"
+              >
+                <BookOpen className="w-4 h-4 mr-2" />
+                Browse Courses
+              </Button>
+            </div>
+
+            {/* Stats */}
+            <div
+              className="mt-16 grid grid-cols-3 gap-8 md:gap-16 animate-fade-in"
+              style={{ animationDelay: "0.5s" }}
+            >
+              {[
+                {
+                  value: stats?.courseCount ?? 0,
+                  label: "Courses",
+                  icon: BookOpen,
+                },
+                {
+                  value: stats?.lessonCount ?? 0,
+                  label: "Lessons",
+                  icon: Play,
+                },
+                { value: "10K+", label: "Students", icon: Users },
+              ].map((stat) => (
+                <div key={stat.label} className="flex flex-col items-center">
+                  <div className="flex items-center gap-2 mb-1">
+                    <stat.icon className="w-4 h-4 text-violet-400" />
+                    <span className="text-2xl md:text-3xl font-bold text-white">
+                      {stat.value}
+                    </span>
+                  </div>
+                  <span className="text-sm text-zinc-500">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Tiers Preview */}
+        <section className="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                tier: "Free",
+                icon: Rocket,
+                color: "emerald",
+                gradient: "from-emerald-500 to-teal-600",
+                bgGlow: "bg-emerald-500/10",
+                borderColor: "border-emerald-500/20",
+                description: "Start your journey with foundational courses",
+                features: [
+                  "Core fundamentals",
+                  "Community access",
+                  "Basic projects",
+                ],
+              },
+              {
+                tier: "Pro",
+                icon: Crown,
+                color: "violet",
+                gradient: "from-violet-500 to-fuchsia-600",
+                bgGlow: "bg-violet-500/10",
+                borderColor: "border-violet-500/30",
+                description: "Level up with advanced, production-ready content",
+                features: [
+                  "All Free content",
+                  "Advanced courses",
+                  "Priority support",
+                  "Certificates",
+                ],
+                popular: true,
+              },
+              {
+                tier: "Ultra",
+                icon: Trophy,
+                color: "cyan",
+                gradient: "from-cyan-400 to-blue-600",
+                bgGlow: "bg-cyan-500/10",
+                borderColor: "border-cyan-500/20",
+                description: "Unlock the real gems - exclusive masterclasses",
+                features: [
+                  "Everything in Pro",
+                  "Exclusive content",
+                  "1-on-1 sessions",
+                  "Private Discord",
+                ],
+              },
+            ].map((plan) => (
+              <div
+                key={plan.tier}
+                className={`relative p-8 rounded-2xl ${plan.bgGlow} border ${plan.borderColor} ${plan.popular ? "ring-2 ring-violet-500/50" : ""} transition-all duration-300 hover:scale-[1.02]`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-xs font-semibold">
+                    Most Popular
+                  </div>
+                )}
+                <div
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center mb-4 shadow-lg`}
+                >
+                  <plan.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-2">{plan.tier}</h3>
+                <p className="text-zinc-400 text-sm mb-6">{plan.description}</p>
+                <ul className="space-y-3">
+                  {plan.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-sm text-zinc-300"
+                    >
+                      <CheckCircle2
+                        className={`w-4 h-4 ${plan.color === "emerald" ? "text-emerald-400" : plan.color === "violet" ? "text-violet-400" : "text-cyan-400"}`}
+                      />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Featured Courses */}
+        <section id="courses" className="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Courses built for{" "}
+              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                real results
+              </span>
+            </h2>
+            <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
+              Each course is packed with modules and lessons designed to take
+              you from zero to job-ready.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {courses.map((course) => {
+              const tier = course.tier ?? "free";
+              const gradient = TIER_GRADIENTS[tier];
+              const badgeColor = TIER_BADGE_COLORS[tier];
+
+              return (
+                <div
+                  key={course._id}
+                  className="group relative rounded-2xl bg-zinc-900/50 border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-all duration-300"
+                >
+                  {/* Course header */}
+                  <div
+                    className={`h-32 bg-gradient-to-br ${gradient} flex items-center justify-center relative overflow-hidden`}
+                  >
+                    {course.thumbnail?.asset?.url ? (
+                      <Image
+                        src={course.thumbnail.asset.url}
+                        alt={course.title ?? "Course thumbnail"}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="text-6xl opacity-50">📚</div>
+                    )}
+                    <div className="absolute inset-0 bg-black/20" />
+                    {/* Tier badge */}
+                    <div
+                      className={`absolute top-3 right-3 px-2 py-1 rounded-md text-xs font-semibold ${badgeColor} text-white`}
+                    >
+                      {tier.toUpperCase()}
+                    </div>
+                  </div>
+
+                  {/* Course content */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-violet-400 transition-colors">
+                      {course.title}
+                    </h3>
+                    <div className="flex items-center gap-4 text-sm text-zinc-400">
+                      <span className="flex items-center gap-1">
+                        <Layers className="w-4 h-4" />
+                        {course.moduleCount ?? 0} modules
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Play className="w-4 h-4" />
+                        {course.lessonCount ?? 0} lessons
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link href="/pricing">
+              <Button
+                variant="outline"
+                className="border-zinc-700 bg-white/5 hover:bg-white/10 text-white"
+              >
+                View All Courses
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section
+          id="testimonials"
+          className="px-6 lg:px-12 py-20 max-w-7xl mx-auto"
+        >
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Students{" "}
+              <span className="bg-gradient-to-r from-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
+                love it
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "Alex Chen",
+                role: "Junior Developer",
+                content:
+                  "Sonny's teaching style is incredible. I went from knowing nothing to landing my first dev job in 6 months!",
+                avatar: "🧑‍💻",
+              },
+              {
+                name: "Sarah Miller",
+                role: "Freelancer",
+                content:
+                  "The Ultra tier is worth every penny. The exclusive content and 1-on-1 sessions transformed my career.",
+                avatar: "👩‍💼",
+              },
+              {
+                name: "James Wilson",
+                role: "CS Student",
+                content:
+                  "Best investment I've made. The Pro courses filled gaps my university courses never covered.",
+                avatar: "🎓",
+              },
+            ].map((testimonial) => (
+              <div
+                key={testimonial.name}
+                className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-800"
+              >
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={`star-${testimonial.name}-${i}`}
+                      className="w-4 h-4 text-amber-400 fill-amber-400"
+                    />
+                  ))}
+                </div>
+                <p className="text-zinc-300 mb-6 leading-relaxed">
+                  &ldquo;{testimonial.content}&rdquo;
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xl">
+                    {testimonial.avatar}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">{testimonial.name}</p>
+                    <p className="text-xs text-zinc-500">{testimonial.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+          <div className="relative rounded-3xl bg-gradient-to-br from-violet-600/20 via-fuchsia-600/10 to-cyan-600/20 border border-white/10 p-12 md:p-20 text-center overflow-hidden">
+            {/* Animated gradient border */}
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 blur-xl" />
+
+            <div className="relative z-10">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-500/30">
+                <Rocket className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                Ready to level up your skills?
+              </h2>
+              <p className="text-zinc-400 text-lg max-w-xl mx-auto mb-10">
+                Start with free courses or unlock everything with Pro and Ultra.
+                Your coding journey begins now.
+              </p>
+              <Link href="/pricing">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-xl shadow-violet-600/30 px-10 h-14 text-lg font-semibold"
+                >
+                  View Pricing
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="px-6 lg:px-12 py-12 border-t border-zinc-800/50 max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center">
+                <Code2 className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-bold">Sonny&apos;s Academy</span>
+            </div>
+            <div className="flex items-center gap-8 text-sm text-zinc-500">
+              <Link href="#" className="hover:text-white transition-colors">
+                Privacy
+              </Link>
+              <Link href="#" className="hover:text-white transition-colors">
+                Terms
+              </Link>
+              <Link href="#" className="hover:text-white transition-colors">
+                Contact
+              </Link>
+            </div>
+            <p className="text-sm text-zinc-600">
+              © 2024 Sonny&apos;s Academy. All rights reserved.
+            </p>
+          </div>
+        </footer>
+      </main>
     </div>
   );
 }

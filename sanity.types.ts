@@ -12,12 +12,7 @@
  * ---------------------------------------------------------------------------------
  */
 
-import "@sanity/client";
-
-import type { ProjectionBase } from "groq";
-
-export declare const internalGroqTypeReferenceTo: unique symbol;
-
+// Source: schema.json
 export type Note = {
   _id: string;
   _type: "note";
@@ -27,6 +22,210 @@ export type Note = {
   title?: string;
   content?: string;
   status?: "draft" | "inProgress" | "complete";
+};
+
+export type Lesson = {
+  _id: string;
+  _type: "lesson";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  video?: MuxVideo;
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  completedBy?: Array<string>;
+};
+
+export type MuxVideo = {
+  _type: "mux.video";
+  asset?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "mux.videoAsset";
+  };
+};
+
+export type Module = {
+  _id: string;
+  _type: "module";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  lessons?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "lesson";
+  }>;
+  completedBy?: Array<string>;
+};
+
+export type Course = {
+  _id: string;
+  _type: "course";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  thumbnail?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  category?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "category";
+  };
+  tier?: "free" | "pro" | "ultra";
+  modules?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "module";
+  }>;
+  featured?: boolean;
+  completedBy?: Array<string>;
+};
+
+export type Category = {
+  _id: string;
+  _type: "category";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  icon?: string;
+  coursesInfo?: string;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type MuxVideoAsset = {
+  _id: string;
+  _type: "mux.videoAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  status?: string;
+  assetId?: string;
+  playbackId?: string;
+  filename?: string;
+  thumbTime?: number;
+  data?: MuxAssetData;
+};
+
+export type MuxAssetData = {
+  _type: "mux.assetData";
+  resolution_tier?: string;
+  upload_id?: string;
+  created_at?: string;
+  id?: string;
+  status?: string;
+  max_stored_resolution?: string;
+  passthrough?: string;
+  encoding_tier?: string;
+  video_quality?: string;
+  master_access?: string;
+  aspect_ratio?: string;
+  duration?: number;
+  max_stored_frame_rate?: number;
+  mp4_support?: string;
+  max_resolution_tier?: string;
+  tracks?: Array<{
+    _key: string;
+  } & MuxTrack>;
+  playback_ids?: Array<{
+    _key: string;
+  } & MuxPlaybackId>;
+  static_renditions?: MuxStaticRenditions;
+};
+
+export type MuxStaticRenditions = {
+  _type: "mux.staticRenditions";
+  status?: string;
+  files?: Array<{
+    _key: string;
+  } & MuxStaticRenditionFile>;
+};
+
+export type MuxStaticRenditionFile = {
+  _type: "mux.staticRenditionFile";
+  name?: string;
+  ext?: string;
+  height?: number;
+  width?: number;
+  bitrate?: number;
+  filesize?: string;
+  type?: string;
+  status?: string;
+  resolution_tier?: string;
+  resolution?: string;
+  id?: string;
+  passthrough?: string;
+};
+
+export type MuxPlaybackId = {
+  _type: "mux.playbackId";
+  id?: string;
+  policy?: string;
+};
+
+export type MuxTrack = {
+  _type: "mux.track";
+  id?: string;
+  type?: string;
+  max_width?: number;
+  max_frame_rate?: number;
+  duration?: number;
+  max_height?: number;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -64,22 +263,6 @@ export type SanityImageMetadata = {
   blurHash?: string;
   hasAlpha?: boolean;
   isOpaque?: boolean;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
 };
 
 export type SanityFileAsset = {
@@ -147,38 +330,85 @@ export type Slug = {
   source?: string;
 };
 
-export type AllSanitySchemaTypes =
-  | Note
-  | SanityImagePaletteSwatch
-  | SanityImagePalette
-  | SanityImageDimensions
-  | SanityImageMetadata
-  | SanityImageHotspot
-  | SanityImageCrop
-  | SanityFileAsset
-  | SanityAssetSourceData
-  | SanityImageAsset
-  | Geopoint
-  | Slug;
+export type AllSanitySchemaTypes = Note | Lesson | MuxVideo | Module | Course | Category | SanityImageCrop | SanityImageHotspot | MuxVideoAsset | MuxAssetData | MuxStaticRenditions | MuxStaticRenditionFile | MuxPlaybackId | MuxTrack | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint | Slug;
+export declare const internalGroqTypeReferenceTo: unique symbol;
+// Source: ./sanity/lib/queries.ts
+// Variable: FEATURED_COURSES_QUERY
+// Query: *[  _type == "course"  && featured == true] | order(_createdAt desc)[0...6] {  _id,  title,  description,  tier,  featured,  thumbnail {    asset-> {      _id,      url    }  },  "moduleCount": count(modules),  "lessonCount": count(modules[]->lessons[])}
+export type FEATURED_COURSES_QUERYResult = Array<{
+  _id: string;
+  title: string | null;
+  description: string | null;
+  tier: "free" | "pro" | "ultra" | null;
+  featured: boolean | null;
+  thumbnail: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+  } | null;
+  moduleCount: number | null;
+  lessonCount: number | null;
+}>;
+// Variable: ALL_COURSES_QUERY
+// Query: *[  _type == "course"] | order(_createdAt desc) {  _id,  title,  description,  tier,  featured,  thumbnail {    asset-> {      _id,      url    }  },  "moduleCount": count(modules),  "lessonCount": count(modules[]->lessons[])}
+export type ALL_COURSES_QUERYResult = Array<{
+  _id: string;
+  title: string | null;
+  description: string | null;
+  tier: "free" | "pro" | "ultra" | null;
+  featured: boolean | null;
+  thumbnail: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+  } | null;
+  moduleCount: number | null;
+  lessonCount: number | null;
+}>;
+// Variable: COURSE_BY_ID_QUERY
+// Query: *[  _type == "course"  && _id == $id][0] {  _id,  title,  description,  tier,  featured,  thumbnail {    asset-> {      _id,      url    }  },  category-> {    _id,    title  },  modules[]-> {    _id,    title,    description,    lessons[]-> {      _id,      title    }  }}
+export type COURSE_BY_ID_QUERYResult = {
+  _id: string;
+  title: string | null;
+  description: string | null;
+  tier: "free" | "pro" | "ultra" | null;
+  featured: boolean | null;
+  thumbnail: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+  } | null;
+  category: {
+    _id: string;
+    title: string | null;
+  } | null;
+  modules: Array<{
+    _id: string;
+    title: string | null;
+    description: string | null;
+    lessons: Array<{
+      _id: string;
+      title: string | null;
+    }> | null;
+  }> | null;
+} | null;
+// Variable: STATS_QUERY
+// Query: {  "courseCount": count(*[_type == "course"]),  "lessonCount": count(*[_type == "lesson"])}
+export type STATS_QUERYResult = {
+  courseCount: number;
+  lessonCount: number;
+};
 
-// Source: ./schema.json
-// Schema ID: default
-export type DefaultSchema =
-  | Note
-  | SanityImagePaletteSwatch
-  | SanityImagePalette
-  | SanityImageDimensions
-  | SanityImageMetadata
-  | SanityImageHotspot
-  | SanityImageCrop
-  | SanityFileAsset
-  | SanityAssetSourceData
-  | SanityImageAsset
-  | Geopoint
-  | Slug;
-
-declare module "groq" {
-  interface SanitySchemas {
-    default: DefaultSchema;
+// Query TypeMap
+import "@sanity/client";
+declare module "@sanity/client" {
+  interface SanityQueries {
+    "*[\n  _type == \"course\"\n  && featured == true\n] | order(_createdAt desc)[0...6] {\n  _id,\n  title,\n  description,\n  tier,\n  featured,\n  thumbnail {\n    asset-> {\n      _id,\n      url\n    }\n  },\n  \"moduleCount\": count(modules),\n  \"lessonCount\": count(modules[]->lessons[])\n}": FEATURED_COURSES_QUERYResult;
+    "*[\n  _type == \"course\"\n] | order(_createdAt desc) {\n  _id,\n  title,\n  description,\n  tier,\n  featured,\n  thumbnail {\n    asset-> {\n      _id,\n      url\n    }\n  },\n  \"moduleCount\": count(modules),\n  \"lessonCount\": count(modules[]->lessons[])\n}": ALL_COURSES_QUERYResult;
+    "*[\n  _type == \"course\"\n  && _id == $id\n][0] {\n  _id,\n  title,\n  description,\n  tier,\n  featured,\n  thumbnail {\n    asset-> {\n      _id,\n      url\n    }\n  },\n  category-> {\n    _id,\n    title\n  },\n  modules[]-> {\n    _id,\n    title,\n    description,\n    lessons[]-> {\n      _id,\n      title\n    }\n  }\n}": COURSE_BY_ID_QUERYResult;
+    "{\n  \"courseCount\": count(*[_type == \"course\"]),\n  \"lessonCount\": count(*[_type == \"lesson\"])\n}": STATS_QUERYResult;
   }
 }

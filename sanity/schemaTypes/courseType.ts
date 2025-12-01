@@ -39,13 +39,11 @@ export const courseType = defineType({
       name: "thumbnail",
       type: "image",
       group: "details",
-      description: "Course thumbnail image (16:9 ratio recommended)",
+      description:
+        "Course thumbnail image (16:9 ratio recommended). If not provided, a placeholder will be shown.",
       options: {
         hotspot: true,
       },
-      validation: (Rule) => [
-        Rule.required().error("Thumbnail is required for course display"),
-      ],
     }),
     defineField({
       name: "category",
