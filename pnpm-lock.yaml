@@ -23,6 +23,9 @@ importers:
       '@mux/mux-node':
         specifier: ^12.8.0
         version: 12.8.0
+      '@mux/mux-uploader-react':
+        specifier: ^1.4.0
+        version: 1.4.0(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
         version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1823,6 +1826,22 @@ packages:
 
   '@mux/mux-player@3.9.1':
     resolution: {integrity: sha512-buvulWJD9qevaCp02oTMezn6QKmV7OwU1WDt7In8IgOJ8GKn1ZWLvfSbWEd1s3Ea1tC33NastKVG8sYlJ7HNkA==}
+
+  '@mux/mux-uploader-react@1.4.0':
+    resolution: {integrity: sha512-J7uZk0OYI/iT98oNzRT4sILX/RooAC7dkMYsaw6nihOPvyV8EGLQP1BNi61wudS5Y2RhtBT25wsUPkhh5ezudg==}
+    peerDependencies:
+      '@types/react': ^17.0.0 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0
+      '@types/react-dom': '*'
+      react: ^17.0.2 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0
+      react-dom: ^17.0.2 || ^17.0.2-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+
+  '@mux/mux-uploader@1.4.0':
+    resolution: {integrity: sha512-QwN1C9rDh2LRSDkKQp618P5wuXKe8kiR4jgCysCAqKKUzDtj9gnzJE459p7AbqYNm/mOxKP07aXSrr3m0P31Cg==}
 
   '@mux/mux-video@0.28.1':
     resolution: {integrity: sha512-lmxPmAPtUITZ+EButcZBoVs2FZbt7UgxYV/sCVOo0kGnOCrnmqjw1G3CW9tEcFST+NzdW/nIdzpRu9kg9FxBeg==}
@@ -8813,6 +8832,20 @@ snapshots:
       player.style: 0.3.0(react@19.2.0)
     transitivePeerDependencies:
       - react
+
+  '@mux/mux-uploader-react@1.4.0(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@mux/mux-uploader': 1.4.0
+      prop-types: 15.8.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+    optionalDependencies:
+      '@types/react': 19.2.7
+      '@types/react-dom': 19.2.3(@types/react@19.2.7)
+
+  '@mux/mux-uploader@1.4.0':
+    dependencies:
+      '@mux/upchunk': 3.5.0
 
   '@mux/mux-video@0.28.1':
     dependencies:

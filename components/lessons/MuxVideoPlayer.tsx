@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { VideoOff } from "lucide-react";
-import { getMuxSignedToken } from "@/lib/actions";
+import { getMuxSignedTokens } from "@/lib/actions/mux";
 
 interface MuxVideoPlayerProps {
   playbackId: string | null | undefined;
@@ -11,12 +11,18 @@ interface MuxVideoPlayerProps {
   className?: string;
 }
 
+interface MuxTokens {
+  playback: string;
+  thumbnail: string;
+  storyboard: string;
+}
+
 export function MuxVideoPlayer({
   playbackId,
   title,
   className,
 }: MuxVideoPlayerProps) {
-  const [signedToken, setSignedToken] = useState<string | null>(null);
+  const [tokens, setTokens] = useState<MuxTokens | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -25,18 +31,28 @@ export function MuxVideoPlayer({
       return;
     }
 
-    async function fetchToken() {
+    async function fetchTokens() {
       try {
-        const result = await getMuxSignedToken(playbackId as string);
-        setSignedToken(result.token);
+        const result = await getMuxSignedTokens(playbackId as string);
+        if (
+          result.playbackToken &&
+          result.thumbnailToken &&
+          result.storyboardToken
+        ) {
+          setTokens({
+            playback: result.playbackToken,
+            thumbnail: result.thumbnailToken,
+            storyboard: result.storyboardToken,
+          });
+        }
       } catch {
-        // Silently handle errors - token will be null and player may fallback
+        // Silently handle errors - tokens will be null and player may fallback
       } finally {
         setIsLoading(false);
       }
     }
 
-    fetchToken();
+    fetchTokens();
   }, [playbackId]);
 
   if (!playbackId) {
@@ -69,7 +85,7 @@ export function MuxVideoPlayer({
     <div className={className}>
       <MuxPlayer
         playbackId={playbackId}
-        tokens={signedToken ? { playback: signedToken } : undefined}
+        tokens={tokens ?? undefined}
         metadata={{
           video_title: title ?? "Lesson video",
         }}

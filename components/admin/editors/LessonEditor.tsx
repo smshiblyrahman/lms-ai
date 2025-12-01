@@ -1,33 +1,20 @@
 "use client";
 
 import { Suspense } from "react";
-import Link from "next/link";
 import type { DocumentHandle } from "@sanity/sdk-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useDocument, useEditDocument } from "@sanity/sdk-react";
 import { DocumentActions } from "@/components/admin/documents/DocumentActions";
 import { OpenInStudio } from "@/components/admin/documents/OpenInStudio";
 import { SlugInput } from "@/components/admin/inputs/SlugInput";
-import { VideoIcon, ExternalLink, CheckCircle2, XCircle } from "lucide-react";
+import { MuxVideoInput } from "@/components/admin/inputs/MuxVideoInput";
 
 interface LessonEditorProps {
   documentId: string;
   projectId: string;
   dataset: string;
-}
-
-interface MuxVideoAsset {
-  _type: "reference";
-  _ref: string;
-}
-
-interface MuxVideo {
-  _type: "mux.video";
-  asset?: MuxVideoAsset;
 }
 
 function LessonEditorFallback() {
@@ -57,7 +44,6 @@ function LessonEditorContent({
     ...handle,
     path: "description",
   });
-  const { data: video } = useDocument<MuxVideo>({ ...handle, path: "video" });
 
   const editTitle = useEditDocument<string>({ ...handle, path: "title" });
   const editDescription = useEditDocument<string>({
@@ -65,92 +51,53 @@ function LessonEditorContent({
     path: "description",
   });
 
-  // Check if video is uploaded by looking for asset reference
-  const hasVideo = Boolean(video?.asset?._ref);
-
-  // Studio URL for the video tab - using the video group
-  const studioVideoUrl = `/studio/structure/lesson;${documentId},video`;
-
   return (
-    <div>
-      <div className="flex items-center justify-end mb-3">
+    <div className="space-y-4">
+      {/* Top bar with actions */}
+      <div className="flex items-center justify-end gap-3">
+        <DocumentActions {...handle} />
+        <div className="h-6 w-px bg-zinc-700" />
         <OpenInStudio handle={handle} />
       </div>
 
-      {/* Header section */}
-      <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6 mb-6">
-        {/* Title input */}
-        <Input
-          value={title ?? ""}
-          onChange={(e) => editTitle(e.currentTarget.value)}
-          placeholder="Untitled Lesson"
-          className="text-2xl font-semibold text-white border-none shadow-none h-auto py-1 focus-visible:ring-0 bg-transparent placeholder:text-zinc-600"
-        />
-
-        {/* Description */}
-        <Textarea
-          value={description ?? ""}
-          onChange={(e) => editDescription(e.currentTarget.value)}
-          placeholder="Add a description..."
-          className="text-zinc-400 border-none shadow-none resize-none focus-visible:ring-0 bg-transparent placeholder:text-zinc-600 mt-2"
-          rows={2}
-        />
-
-        {/* Slug */}
-        <div className="mt-4 pt-4 border-t border-zinc-800">
-          <SlugInput
-            {...handle}
-            path="slug"
-            label="URL Slug"
-            sourceField="title"
-          />
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center justify-end mt-4 pt-4 border-t border-zinc-800">
-          <DocumentActions {...handle} />
-        </div>
-      </div>
-
-      {/* Video status section - compact */}
-      <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-zinc-800">
-              <VideoIcon className="h-5 w-5 text-zinc-400" />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-medium text-sm text-white">Video</span>
-              {hasVideo ? (
-                <Badge
-                  variant="secondary"
-                  className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                >
-                  <CheckCircle2 className="h-3 w-3 mr-1" />
-                  Uploaded
-                </Badge>
-              ) : (
-                <Badge
-                  variant="secondary"
-                  className="bg-zinc-800 text-zinc-400 border border-zinc-700"
-                >
-                  <XCircle className="h-3 w-3 mr-1" />
-                  No video
-                </Badge>
-              )}
-            </div>
+      {/* Two column layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Left column - Content details */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Title & Description */}
+          <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6">
+            <Input
+              value={title ?? ""}
+              onChange={(e) => editTitle(e.currentTarget.value)}
+              placeholder="Untitled Lesson"
+              className="text-2xl font-semibold text-white border-none shadow-none h-auto py-1 focus-visible:ring-0 bg-transparent placeholder:text-zinc-600"
+            />
+            <Textarea
+              value={description ?? ""}
+              onChange={(e) => editDescription(e.currentTarget.value)}
+              placeholder="Add a description..."
+              className="text-zinc-400 border-none shadow-none resize-none focus-visible:ring-0 bg-transparent placeholder:text-zinc-600 mt-3"
+              rows={3}
+            />
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            asChild
-            className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
-          >
-            <Link href={studioVideoUrl} target="_blank">
-              <ExternalLink className="h-4 w-4 mr-2" />
-              {hasVideo ? "Manage in Studio" : "Upload in Studio"}
-            </Link>
-          </Button>
+
+          {/* Settings */}
+          <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6">
+            <h3 className="text-sm font-medium text-zinc-400 mb-4">Settings</h3>
+            <SlugInput
+              {...handle}
+              path="slug"
+              label="URL Slug"
+              sourceField="title"
+            />
+          </div>
+        </div>
+
+        {/* Right column - Video */}
+        <div className="lg:col-span-2">
+          <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6 lg:sticky lg:top-6">
+            <MuxVideoInput {...handle} path="video" label="Lesson Video" />
+          </div>
         </div>
       </div>
     </div>

@@ -31,12 +31,9 @@ interface DocumentActionsProps extends DocumentHandle {}
 
 function DocumentActionsFallback() {
   return (
-    <div className="flex items-center justify-between w-full">
-      <Skeleton className="h-6 w-16 bg-zinc-800" />
-      <div className="flex items-center gap-2">
-        <Skeleton className="h-9 w-24 bg-zinc-800" />
-        <Skeleton className="h-9 w-9 bg-zinc-800" />
-      </div>
+    <div className="flex items-center gap-2">
+      <Skeleton className="h-8 w-20 bg-zinc-800 rounded-lg" />
+      <Skeleton className="h-8 w-8 bg-zinc-800 rounded-lg" />
     </div>
   );
 }
@@ -77,96 +74,93 @@ function DocumentActionsContent({
   };
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex items-center gap-2">
       {/* Draft badge - only shown when in draft mode */}
       {isDraft && (
-        <span className="px-3 py-1 text-xs font-medium rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+        <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
           Draft
         </span>
       )}
 
-      {/* Action buttons */}
-      <div className="flex items-center gap-2 ml-auto">
-        {/* Discard changes - only when in draft AND published version exists */}
-        {isDraft && hasPublishedVersion && (
-          <button
-            onClick={() => {
-              const confirmed = window.confirm(
-                "Discard all changes? This will revert to the published version.",
-              );
-              if (!confirmed) return;
-              apply(
-                discardDocument({
-                  documentId: baseId,
-                  documentType,
-                }),
-              );
-            }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-zinc-400 border border-zinc-700 rounded-lg hover:bg-zinc-800 hover:border-zinc-600 hover:text-zinc-300 transition-colors"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Discard
-          </button>
-        )}
-
-        {/* Unpublish - only when viewing published version (not draft) */}
-        {!isDraft && (
-          <button
-            onClick={() =>
-              apply(
-                unpublishDocument({
-                  documentId: baseId,
-                  documentType,
-                }),
-              )
-            }
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-zinc-400 border border-zinc-700 rounded-lg hover:bg-zinc-800 hover:border-zinc-600 hover:text-zinc-300 transition-colors"
-          >
-            <Download className="h-4 w-4" />
-            Unpublish
-          </button>
-        )}
-
-        {/* Publish - only when in draft mode */}
-        {isDraft && (
-          <button
-            onClick={() =>
-              apply(
-                publishDocument({
-                  documentId: baseId,
-                  documentType,
-                }),
-              )
-            }
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-lg shadow-lg shadow-violet-500/20 transition-all"
-          >
-            <Upload className="h-4 w-4" />
-            Publish
-          </button>
-        )}
-
-        {/* Delete button */}
+      {/* Discard changes - only when in draft AND published version exists */}
+      {isDraft && hasPublishedVersion && (
         <button
           onClick={() => {
             const confirmed = window.confirm(
-              "Delete this document permanently? This cannot be undone.",
+              "Discard all changes? This will revert to the published version.",
             );
             if (!confirmed) return;
-
             apply(
-              deleteDocument({
+              discardDocument({
                 documentId: baseId,
                 documentType,
               }),
             );
-            router.push(getListUrl());
           }}
-          className="h-8 w-8 inline-flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-          title="Delete"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-zinc-400 border border-zinc-700 rounded-lg hover:bg-zinc-800 hover:border-zinc-600 hover:text-zinc-300 transition-colors"
         >
-          <Trash2 className="h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
+          Discard
         </button>
-      </div>
+      )}
+
+      {/* Unpublish - only when viewing published version (not draft) */}
+      {!isDraft && (
+        <button
+          onClick={() =>
+            apply(
+              unpublishDocument({
+                documentId: baseId,
+                documentType,
+              }),
+            )
+          }
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-zinc-400 border border-zinc-700 rounded-lg hover:bg-zinc-800 hover:border-zinc-600 hover:text-zinc-300 transition-colors"
+        >
+          <Download className="h-4 w-4" />
+          Unpublish
+        </button>
+      )}
+
+      {/* Publish - only when in draft mode */}
+      {isDraft && (
+        <button
+          onClick={() =>
+            apply(
+              publishDocument({
+                documentId: baseId,
+                documentType,
+              }),
+            )
+          }
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-lg shadow-lg shadow-violet-500/20 transition-all"
+        >
+          <Upload className="h-4 w-4" />
+          Publish
+        </button>
+      )}
+
+      {/* Delete button */}
+      <button
+        onClick={() => {
+          const confirmed = window.confirm(
+            "Delete this document permanently? This cannot be undone.",
+          );
+          if (!confirmed) return;
+
+          apply(
+            deleteDocument({
+              documentId: baseId,
+              documentType,
+            }),
+          );
+          router.push(getListUrl());
+        }}
+        className="h-8 w-8 inline-flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+        title="Delete"
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
     </div>
   );
 }
