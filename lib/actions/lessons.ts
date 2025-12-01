@@ -6,6 +6,7 @@ import { writeClient } from "@/sanity/lib/client";
 
 export async function toggleLessonCompletion(
   lessonId: string,
+  lessonSlug: string,
   markComplete: boolean
 ): Promise<{ success: boolean; isCompleted: boolean }> {
   const { userId } = await auth();
@@ -30,7 +31,7 @@ export async function toggleLessonCompletion(
         .commit();
     }
 
-    revalidatePath(`/lessons/${lessonId}`);
+    revalidatePath(`/lessons/${lessonSlug}`);
     revalidatePath("/dashboard");
 
     return { success: true, isCompleted: markComplete };
@@ -39,4 +40,3 @@ export async function toggleLessonCompletion(
     return { success: false, isCompleted: !markComplete };
   }
 }
-

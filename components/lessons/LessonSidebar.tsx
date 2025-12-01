@@ -17,7 +17,7 @@ type Module = NonNullable<CourseModules>[number];
 type Lesson = NonNullable<Module["lessons"]>[number];
 
 interface LessonSidebarProps {
-  courseId: string;
+  courseSlug: string;
   courseTitle: string | null;
   modules: Module[] | null;
   currentLessonId: string;
@@ -25,7 +25,7 @@ interface LessonSidebarProps {
 }
 
 export function LessonSidebar({
-  courseId,
+  courseSlug,
   courseTitle,
   modules,
   currentLessonId,
@@ -46,7 +46,7 @@ export function LessonSidebar({
         {/* Course header */}
         <div className="p-4 border-b border-zinc-800">
           <Link
-            href={`/courses/${courseId}`}
+            href={`/courses/${courseSlug}`}
             className="text-sm text-zinc-400 hover:text-white transition-colors"
           >
             ← Back to course
@@ -108,7 +108,7 @@ export function LessonSidebar({
                         return (
                           <Link
                             key={lesson._id}
-                            href={`/lessons/${lesson._id}`}
+                            href={`/lessons/${lesson.slug!.current!}`}
                             className={cn(
                               "flex items-center gap-2.5 pl-2 pr-3 py-2 rounded-lg text-sm transition-colors",
                               isActive

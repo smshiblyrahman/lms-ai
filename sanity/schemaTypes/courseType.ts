@@ -23,6 +23,18 @@ export const courseType = defineType({
       ],
     }),
     defineField({
+      name: "slug",
+      type: "slug",
+      group: "settings",
+      options: {
+        source: "title",
+        maxLength: 96,
+      },
+      validation: (Rule) => [
+        Rule.required().error("Slug is required for URL generation"),
+      ],
+    }),
+    defineField({
       name: "description",
       type: "text",
       group: "details",

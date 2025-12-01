@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Lock, Play, Layers, CheckCircle2 } from "lucide-react";
-import { TIER_STYLES, type Tier } from "@/lib/constants";
+import { TIER_STYLES } from "@/lib/constants";
 import { Progress } from "@/components/ui/progress";
 import type { DASHBOARD_COURSES_QUERYResult } from "@/sanity.types";
 
@@ -13,9 +13,14 @@ type SanityCourse = DASHBOARD_COURSES_QUERYResult[number];
 export interface CourseCardProps
   extends Pick<
     SanityCourse,
-    "title" | "description" | "tier" | "thumbnail" | "moduleCount" | "lessonCount"
+    | "title"
+    | "description"
+    | "tier"
+    | "thumbnail"
+    | "moduleCount"
+    | "lessonCount"
   > {
-  id: string;
+  slug: { current: string };
   completedLessonCount?: number | null;
   isCompleted?: boolean;
   isLocked?: boolean;
@@ -23,7 +28,7 @@ export interface CourseCardProps
 }
 
 export function CourseCard({
-  id,
+  slug,
   title,
   description,
   tier,
@@ -39,10 +44,11 @@ export function CourseCard({
   const styles = TIER_STYLES[displayTier];
   const totalLessons = lessonCount ?? 0;
   const completed = completedLessonCount ?? 0;
-  const progressPercent = totalLessons > 0 ? (completed / totalLessons) * 100 : 0;
+  const progressPercent =
+    totalLessons > 0 ? (completed / totalLessons) * 100 : 0;
 
   return (
-    <Link href={`/courses/${id}`} className="group block">
+    <Link href={`/courses/${slug.current}`} className="group block">
       <div className="relative rounded-2xl bg-zinc-900/50 border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/5">
         {/* Course thumbnail/header */}
         <div
@@ -119,7 +125,9 @@ export function CourseCard({
                 <span className="text-zinc-400">
                   {completed}/{totalLessons} lessons
                 </span>
-                <span className="text-zinc-500">{Math.round(progressPercent)}%</span>
+                <span className="text-zinc-500">
+                  {Math.round(progressPercent)}%
+                </span>
               </div>
               <Progress
                 value={progressPercent}
@@ -132,4 +140,3 @@ export function CourseCard({
     </Link>
   );
 }
-

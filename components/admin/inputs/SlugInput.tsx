@@ -1,0 +1,120 @@
+"use client";
+
+import { Suspense, useCallback } from "react";
+import {
+  useDocument,
+  useEditDocument,
+  type DocumentHandle,
+} from "@sanity/sdk-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RefreshCw } from "lucide-react";
+
+interface SlugValue {
+  _type: "slug";
+  current: string;
+}
+
+interface SlugInputProps extends DocumentHandle {
+  path: string;
+  label: string;
+  sourceField?: string;
+  placeholder?: string;
+}
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function SlugInputFallback({ label }: { label: string }) {
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <Skeleton className="h-10 w-full" />
+    </div>
+  );
+}
+
+function SlugInputField({
+  path,
+  label,
+  sourceField = "title",
+  placeholder = "enter-slug-here",
+  ...handle
+}: SlugInputProps) {
+  const { data: slugValue } = useDocument<SlugValue>({ ...handle, path });
+  const { data: sourceValue } = useDocument<string>({
+    ...handle,
+    path: sourceField,
+  });
+  const editSlug = useEditDocument<SlugValue>({ ...handle, path });
+
+  const currentSlug = slugValue?.current ?? "";
+
+  const handleChange = useCallback(
+    (value: string) => {
+      editSlug({
+        _type: "slug",
+        current: slugify(value),
+      });
+    },
+    [editSlug],
+  );
+
+  const generateFromSource = useCallback(() => {
+    if (sourceValue) {
+      editSlug({
+        _type: "slug",
+        current: slugify(sourceValue),
+      });
+    }
+  }, [sourceValue, editSlug]);
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={path}>{label}</Label>
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+            /
+          </span>
+          <Input
+            id={path}
+            type="text"
+            value={currentSlug}
+            onChange={(e) => handleChange(e.currentTarget.value)}
+            placeholder={placeholder}
+            className="pl-6"
+          />
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={generateFromSource}
+          title="Generate from title"
+        >
+          <RefreshCw className="h-4 w-4" />
+        </Button>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        URL-friendly identifier for this content
+      </p>
+    </div>
+  );
+}
+
+export function SlugInput(props: SlugInputProps) {
+  return (
+    <Suspense fallback={<SlugInputFallback label={props.label} />}>
+      <SlugInputField {...props} />
+    </Suspense>
+  );
+}

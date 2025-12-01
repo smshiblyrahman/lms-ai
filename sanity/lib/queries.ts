@@ -6,6 +6,7 @@ export const FEATURED_COURSES_QUERY = defineQuery(`*[
 ] | order(_createdAt desc)[0...6] {
   _id,
   title,
+  slug,
   description,
   tier,
   featured,
@@ -24,6 +25,7 @@ export const ALL_COURSES_QUERY = defineQuery(`*[
 ] | order(_createdAt desc) {
   _id,
   title,
+  slug,
   description,
   tier,
   featured,
@@ -43,6 +45,7 @@ export const COURSE_BY_ID_QUERY = defineQuery(`*[
 ][0] {
   _id,
   title,
+  slug,
   description,
   tier,
   featured,
@@ -62,7 +65,40 @@ export const COURSE_BY_ID_QUERY = defineQuery(`*[
     description,
     lessons[]-> {
       _id,
-      title
+      title,
+      slug
+    }
+  }
+}`);
+
+export const COURSE_BY_SLUG_QUERY = defineQuery(`*[
+  _type == "course"
+  && slug.current == $slug
+][0] {
+  _id,
+  title,
+  slug,
+  description,
+  tier,
+  featured,
+  thumbnail {
+    asset-> {
+      _id,
+      url
+    }
+  },
+  category-> {
+    _id,
+    title
+  },
+  modules[]-> {
+    _id,
+    title,
+    description,
+    lessons[]-> {
+      _id,
+      title,
+      slug
     }
   }
 }`);
@@ -77,6 +113,7 @@ export const DASHBOARD_COURSES_QUERY = defineQuery(`*[
 ] | order(_createdAt desc) {
   _id,
   title,
+  slug,
   description,
   tier,
   featured,
@@ -102,10 +139,11 @@ export const DASHBOARD_COURSES_QUERY = defineQuery(`*[
 
 export const COURSE_WITH_MODULES_QUERY = defineQuery(`*[
   _type == "course"
-  && _id == $id
+  && slug.current == $slug
 ][0] {
   _id,
   title,
+  slug,
   description,
   tier,
   featured,
@@ -127,6 +165,7 @@ export const COURSE_WITH_MODULES_QUERY = defineQuery(`*[
     lessons[]-> {
       _id,
       title,
+      slug,
       description,
       completedBy,
       video {
@@ -148,6 +187,7 @@ export const LESSON_BY_ID_QUERY = defineQuery(`*[
 ][0] {
   _id,
   title,
+  slug,
   description,
   video {
     asset-> {
@@ -163,6 +203,7 @@ export const LESSON_BY_ID_QUERY = defineQuery(`*[
   "course": *[_type == "course" && ^._id in modules[]->lessons[]->_id][0] {
     _id,
     title,
+    slug,
     tier,
     modules[]-> {
       _id,
@@ -170,6 +211,44 @@ export const LESSON_BY_ID_QUERY = defineQuery(`*[
       lessons[]-> {
         _id,
         title,
+        slug,
+        completedBy
+      }
+    }
+  }
+}`);
+
+export const LESSON_BY_SLUG_QUERY = defineQuery(`*[
+  _type == "lesson"
+  && slug.current == $slug
+][0] {
+  _id,
+  title,
+  slug,
+  description,
+  video {
+    asset-> {
+      playbackId,
+      status,
+      data {
+        duration
+      }
+    }
+  },
+  content,
+  completedBy,
+  "course": *[_type == "course" && ^._id in modules[]->lessons[]->_id][0] {
+    _id,
+    title,
+    slug,
+    tier,
+    modules[]-> {
+      _id,
+      title,
+      lessons[]-> {
+        _id,
+        title,
+        slug,
         completedBy
       }
     }

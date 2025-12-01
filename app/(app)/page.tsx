@@ -14,16 +14,21 @@ import {
   Users,
   Trophy,
   Sparkles,
+  LayoutDashboard,
 } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/live";
 import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries";
+import { currentUser } from "@clerk/nextjs/server";
 
 export default async function Home() {
-  // Fetch featured courses and stats from Sanity
-  const [{ data: courses }, { data: stats }] = await Promise.all([
+  // Fetch featured courses, stats, and check auth status
+  const [{ data: courses }, { data: stats }, user] = await Promise.all([
     sanityFetch({ query: FEATURED_COURSES_QUERY }),
     sanityFetch({ query: STATS_QUERY }),
+    currentUser(),
   ]);
+
+  const isSignedIn = !!user;
 
   return (
     <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
@@ -93,23 +98,51 @@ export default async function Home() {
               className="flex flex-col sm:flex-row items-center gap-4 animate-fade-in"
               style={{ animationDelay: "0.4s" }}
             >
-              <Link href="/pricing">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-xl shadow-violet-600/30 px-8 h-12 text-base font-semibold"
-                >
-                  <Play className="w-4 h-4 mr-2 fill-white" />
-                  Start Learning Free
-                </Button>
-              </Link>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-zinc-700 bg-white/5 hover:bg-white/10 text-white px-8 h-12 text-base"
-              >
-                <BookOpen className="w-4 h-4 mr-2" />
-                Browse Courses
-              </Button>
+              {isSignedIn ? (
+                <>
+                  <Link href="/dashboard">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-xl shadow-violet-600/30 px-8 h-12 text-base font-semibold"
+                    >
+                      <LayoutDashboard className="w-4 h-4 mr-2" />
+                      Go to Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard/courses">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="border-zinc-700 bg-white/5 hover:bg-white/10 text-white px-8 h-12 text-base"
+                    >
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      My Courses
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/pricing">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-xl shadow-violet-600/30 px-8 h-12 text-base font-semibold"
+                    >
+                      <Play className="w-4 h-4 mr-2 fill-white" />
+                      Start Learning Free
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="border-zinc-700 bg-white/5 hover:bg-white/10 text-white px-8 h-12 text-base"
+                    >
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Browse Courses
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Stats */}
@@ -246,8 +279,8 @@ export default async function Home() {
           <div className="grid md:grid-cols-3 gap-6">
             {courses.map((course) => (
               <CourseCard
-                key={course._id}
-                id={course._id}
+                key={course.slug!.current!}
+                slug={{ current: course.slug!.current! }}
                 title={course.title}
                 description={course.description}
                 tier={course.tier}

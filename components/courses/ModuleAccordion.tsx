@@ -113,7 +113,7 @@ export function ModuleAccordion({ modules, userId }: ModuleAccordionProps) {
                     return (
                       <Link
                         key={lesson._id}
-                        href={`/lessons/${lesson._id}`}
+                        href={`/lessons/${lesson.slug!.current!}`}
                         className="flex items-center gap-2.5 pl-2 pr-3 py-2 rounded-lg hover:bg-zinc-800/50 transition-colors group"
                       >
                         {completed ? (

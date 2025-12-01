@@ -85,6 +85,7 @@ export function CourseList({
             <CourseCard
               key={course._id}
               id={course._id}
+              slug={course.slug}
               title={course.title}
               description={course.description}
               tier={course.tier}

@@ -69,6 +69,7 @@ export function CourseContent({ course, userId }: CourseContentProps) {
           {userId && (
             <CourseCompleteButton
               courseId={course._id}
+              courseSlug={course.slug!.current!}
               isCompleted={isCourseCompleted}
               completedLessons={completedLessons}
               totalLessons={totalLessons}

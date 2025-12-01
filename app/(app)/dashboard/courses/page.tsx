@@ -83,8 +83,8 @@ export default async function MyCoursesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {startedCourses.map((course) => (
               <CourseCard
-                key={course._id}
-                id={course._id}
+                key={course.slug!.current!}
+                slug={{ current: course.slug!.current! }}
                 title={course.title}
                 description={course.description}
                 tier={course.tier}

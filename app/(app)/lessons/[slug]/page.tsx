@@ -3,19 +3,19 @@ import { auth } from "@clerk/nextjs/server";
 import { Header } from "@/components/Header";
 import { LessonPageContent } from "@/components/lessons";
 import { sanityFetch } from "@/sanity/lib/live";
-import { LESSON_BY_ID_QUERY } from "@/sanity/lib/queries";
+import { LESSON_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 
 interface LessonPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export default async function LessonPage({ params }: LessonPageProps) {
-  const { id } = await params;
+  const { slug } = await params;
   const { userId } = await auth();
 
   const { data: lesson } = await sanityFetch({
-    query: LESSON_BY_ID_QUERY,
-    params: { id },
+    query: LESSON_BY_SLUG_QUERY,
+    params: { slug },
   });
 
   if (!lesson) {
@@ -55,3 +55,4 @@ export default async function LessonPage({ params }: LessonPageProps) {
     </div>
   );
 }
+

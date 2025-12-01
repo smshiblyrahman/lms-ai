@@ -9,8 +9,9 @@ import { useDocument, useEditDocument } from "@sanity/sdk-react";
 import { SelectInput } from "@/components/admin/inputs/SelectInput";
 import { SwitchInput } from "@/components/admin/inputs/SwitchInput";
 import { ReferenceInput } from "@/components/admin/inputs/ReferenceInput";
-import { ReferenceArrayInput } from "@/components/admin/inputs/ReferenceArrayInput";
+import { ModuleAccordionInput } from "@/components/admin/inputs/ModuleAccordionInput";
 import { ImageInput } from "@/components/admin/inputs/ImageInput";
+import { SlugInput } from "@/components/admin/inputs/SlugInput";
 import { DocumentActions } from "@/components/admin/documents/DocumentActions";
 import { OpenInStudio } from "@/components/admin/documents/OpenInStudio";
 import { TIER_OPTIONS } from "@/lib/constants";
@@ -89,14 +90,13 @@ function CourseEditorContent({
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         {/* Main: Modules */}
         <div className="bg-background rounded-xl border shadow-sm p-6">
-          <ReferenceArrayInput
+          <ModuleAccordionInput
             documentId={documentId}
             documentType="course"
             projectId={projectId}
             dataset={dataset}
             path="modules"
             label="Modules"
-            referenceType="module"
           />
         </div>
 
@@ -121,6 +121,12 @@ function CourseEditorContent({
             path="featured"
             label="Featured"
             description="Show on homepage"
+          />
+          <SlugInput
+            {...handle}
+            path="slug"
+            label="URL Slug"
+            sourceField="title"
           />
         </div>
       </div>

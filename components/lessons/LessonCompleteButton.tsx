@@ -7,11 +7,13 @@ import { toggleLessonCompletion } from "@/lib/actions";
 
 interface LessonCompleteButtonProps {
   lessonId: string;
+  lessonSlug: string;
   isCompleted: boolean;
 }
 
 export function LessonCompleteButton({
   lessonId,
+  lessonSlug,
   isCompleted: initialCompleted,
 }: LessonCompleteButtonProps) {
   const [isCompleted, setIsCompleted] = useState(initialCompleted);
@@ -19,7 +21,7 @@ export function LessonCompleteButton({
 
   const handleToggle = () => {
     startTransition(async () => {
-      const result = await toggleLessonCompletion(lessonId, !isCompleted);
+      const result = await toggleLessonCompletion(lessonId, lessonSlug, !isCompleted);
       if (result.success) {
         setIsCompleted(result.isCompleted);
       }

@@ -36,7 +36,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
       return { prevLesson: null, nextLesson: null, completedLessonIds: [] };
 
     // Flatten all lessons and track completed ones
-    const allLessons: Array<{ id: string; title: string }> = [];
+    const allLessons: Array<{ id: string; slug: string; title: string }> = [];
     const completed: string[] = [];
 
     for (const module of modules) {
@@ -44,6 +44,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
         for (const l of module.lessons) {
           allLessons.push({
             id: l._id,
+            slug: l.slug!.current!,
             title: l.title ?? "Untitled Lesson",
           });
           if (userId && l.completedBy?.includes(userId)) {
@@ -73,7 +74,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
       {/* Sidebar */}
       {lesson.course && hasAccess && (
         <LessonSidebar
-          courseId={lesson.course._id}
+          courseSlug={lesson.course.slug!.current!}
           courseTitle={lesson.course.title}
           modules={lesson.course.modules ?? null}
           currentLessonId={lesson._id}
@@ -108,6 +109,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
               {userId && (
                 <LessonCompleteButton
                   lessonId={lesson._id}
+                  lessonSlug={lesson.slug!.current!}
                   isCompleted={isCompleted}
                 />
               )}
@@ -127,7 +129,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
             {/* Navigation between lessons */}
             <div className="flex items-center justify-between pt-6 border-t border-zinc-800">
               {prevLesson ? (
-                <Link href={`/lessons/${prevLesson.id}`}>
+                <Link href={`/lessons/${prevLesson.slug}`}>
                   <Button
                     variant="ghost"
                     className="text-zinc-400 hover:text-white hover:bg-zinc-800"
@@ -142,7 +144,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
               )}
 
               {nextLesson ? (
-                <Link href={`/lessons/${nextLesson.id}`}>
+                <Link href={`/lessons/${nextLesson.slug}`}>
                   <Button className="bg-violet-600 hover:bg-violet-500 text-white">
                     <span className="hidden sm:inline">{nextLesson.title}</span>
                     <span className="sm:hidden">Next</span>
