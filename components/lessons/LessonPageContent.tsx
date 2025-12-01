@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import Link from "next/link";
 import { BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,19 +24,18 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
   const hasAccess = hasTierAccess(userTier, courseTier);
 
   // Check if user has completed this lesson
-  const isCompleted = useMemo(() => {
-    return userId ? (lesson.completedBy?.includes(userId) ?? false) : false;
-  }, [lesson.completedBy, userId]);
+  const isCompleted = userId
+    ? (lesson.completedBy?.includes(userId) ?? false)
+    : false;
 
   // Find previous and next lessons for navigation
-  const { prevLesson, nextLesson, completedLessonIds } = useMemo(() => {
-    const modules = lesson.course?.modules;
-    if (!modules)
-      return { prevLesson: null, nextLesson: null, completedLessonIds: [] };
+  const modules = lesson.course?.modules;
+  let prevLesson: { id: string; slug: string; title: string } | null = null;
+  let nextLesson: { id: string; slug: string; title: string } | null = null;
+  const completedLessonIds: string[] = [];
 
-    // Flatten all lessons and track completed ones
+  if (modules) {
     const allLessons: Array<{ id: string; slug: string; title: string }> = [];
-    const completed: string[] = [];
 
     for (const module of modules) {
       if (module.lessons) {
@@ -48,24 +46,19 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
             title: l.title ?? "Untitled Lesson",
           });
           if (userId && l.completedBy?.includes(userId)) {
-            completed.push(l._id);
+            completedLessonIds.push(l._id);
           }
         }
       }
     }
 
-    // Find current index
     const currentIndex = allLessons.findIndex((l) => l.id === lesson._id);
-
-    return {
-      prevLesson: currentIndex > 0 ? allLessons[currentIndex - 1] : null,
-      nextLesson:
-        currentIndex < allLessons.length - 1
-          ? allLessons[currentIndex + 1]
-          : null,
-      completedLessonIds: completed,
-    };
-  }, [lesson.course?.modules, lesson._id, userId]);
+    prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
+    nextLesson =
+      currentIndex < allLessons.length - 1
+        ? allLessons[currentIndex + 1]
+        : null;
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">

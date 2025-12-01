@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { CourseHero } from "./CourseHero";
 import { ModuleAccordion } from "./ModuleAccordion";
@@ -23,29 +22,21 @@ export function CourseContent({ course, userId }: CourseContentProps) {
   const hasAccess = hasTierAccess(userTier, course.tier);
 
   // Calculate completion stats from actual lesson data
-  const { totalLessons, completedLessons, isCourseCompleted } = useMemo(() => {
-    let total = 0;
-    let completed = 0;
+  let totalLessons = 0;
+  let completedLessons = 0;
 
-    for (const m of course.modules ?? []) {
-      for (const l of m.lessons ?? []) {
-        total++;
-        if (userId && l.completedBy?.includes(userId)) {
-          completed++;
-        }
+  for (const m of course.modules ?? []) {
+    for (const l of m.lessons ?? []) {
+      totalLessons++;
+      if (userId && l.completedBy?.includes(userId)) {
+        completedLessons++;
       }
     }
+  }
 
-    const isCompleted = userId
-      ? (course.completedBy?.includes(userId) ?? false)
-      : false;
-
-    return {
-      totalLessons: total,
-      completedLessons: completed,
-      isCourseCompleted: isCompleted,
-    };
-  }, [course.modules, course.completedBy, userId]);
+  const isCourseCompleted = userId
+    ? (course.completedBy?.includes(userId) ?? false)
+    : false;
 
   if (!isAuthLoaded) {
     return <Skeleton className="w-full h-full" />;

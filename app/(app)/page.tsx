@@ -113,7 +113,7 @@ export default async function Home() {
                     <Button
                       variant="outline"
                       size="lg"
-                      className="border-zinc-700 bg-white/5 hover:bg-white/10 text-white px-8 h-12 text-base"
+                      className="border-zinc-700 bg-white/5 text-white px-8 h-12 text-base hover:bg-white/10 hover:text-white"
                     >
                       <BookOpen className="w-4 h-4 mr-2" />
                       My Courses
@@ -135,7 +135,7 @@ export default async function Home() {
                     <Button
                       variant="outline"
                       size="lg"
-                      className="border-zinc-700 bg-white/5 hover:bg-white/10 text-white px-8 h-12 text-base"
+                      className="border-zinc-700 bg-white/5 text-white px-8 h-12 text-base hover:bg-white/10 hover:text-white"
                     >
                       <BookOpen className="w-4 h-4 mr-2" />
                       Browse Courses
@@ -292,10 +292,10 @@ export default async function Home() {
           </div>
 
           <div className="text-center mt-10">
-            <Link href="/pricing">
+            <Link href="/dashboard">
               <Button
                 variant="outline"
-                className="border-zinc-700 bg-white/5 hover:bg-white/10 text-white"
+                className="border-zinc-700 bg-white/5 text-white hover:bg-white/10 hover:text-white"
               >
                 View All Courses
                 <ArrowRight className="w-4 h-4 ml-2" />

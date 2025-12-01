@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CourseCard } from "./CourseCard";
 import { TierFilterTabs, type TierFilter } from "./TierFilterTabs";
 import { useUserTier, hasTierAccess } from "@/lib/hooks/use-user-tier";
-import type { Tier } from "@/lib/constants";
 import type { DASHBOARD_COURSES_QUERYResult } from "@/sanity.types";
 
 // Infer course type from Sanity query result
@@ -30,26 +29,24 @@ export function CourseList({
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter courses based on tier and search query
-  const filteredCourses = useMemo(() => {
-    return courses.filter((course) => {
-      // Tier filter
-      if (tierFilter !== "all" && course.tier !== tierFilter) {
+  const filteredCourses = courses.filter((course) => {
+    // Tier filter
+    if (tierFilter !== "all" && course.tier !== tierFilter) {
+      return false;
+    }
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      const title = course.title?.toLowerCase() ?? "";
+      const description = course.description?.toLowerCase() ?? "";
+      if (!title.includes(query) && !description.includes(query)) {
         return false;
       }
+    }
 
-      // Search filter
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        const title = course.title?.toLowerCase() ?? "";
-        const description = course.description?.toLowerCase() ?? "";
-        if (!title.includes(query) && !description.includes(query)) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }, [courses, tierFilter, searchQuery]);
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -83,9 +80,8 @@ export function CourseList({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
             <CourseCard
-              key={course._id}
-              id={course._id}
-              slug={course.slug}
+              key={course.slug!.current!}
+              slug={{ current: course.slug!.current! }}
               title={course.title}
               description={course.description}
               tier={course.tier}

@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { useAuth } from "@clerk/nextjs";
 import type { Tier } from "@/lib/constants";
 
@@ -11,11 +10,9 @@ import type { Tier } from "@/lib/constants";
 export function useUserTier(): Tier {
   const { has } = useAuth();
 
-  return useMemo(() => {
-    if (has?.({ plan: "ultra" })) return "ultra";
-    if (has?.({ plan: "pro" })) return "pro";
-    return "free";
-  }, [has]);
+  if (has?.({ plan: "ultra" })) return "ultra";
+  if (has?.({ plan: "pro" })) return "pro";
+  return "free";
 }
 
 /**

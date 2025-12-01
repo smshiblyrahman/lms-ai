@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback } from "react";
+import { Suspense } from "react";
 import {
   useDocument,
   useEditDocument,
@@ -58,24 +58,21 @@ function SlugInputField({
 
   const currentSlug = slugValue?.current ?? "";
 
-  const handleChange = useCallback(
-    (value: string) => {
-      editSlug({
-        _type: "slug",
-        current: slugify(value),
-      });
-    },
-    [editSlug],
-  );
+  const handleChange = (value: string) => {
+    editSlug({
+      _type: "slug",
+      current: slugify(value),
+    });
+  };
 
-  const generateFromSource = useCallback(() => {
+  const generateFromSource = () => {
     if (sourceValue) {
       editSlug({
         _type: "slug",
         current: slugify(sourceValue),
       });
     }
-  }, [sourceValue, editSlug]);
+  };
 
   return (
     <div className="space-y-2">
