@@ -67,8 +67,6 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
     };
   }, [lesson.course?.modules, lesson._id, userId]);
 
-  console.log(lesson.video);
-
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       {/* Sidebar */}
