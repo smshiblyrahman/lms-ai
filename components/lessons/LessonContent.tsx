@@ -1,5 +1,5 @@
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
-import type { PortableTextBlock } from "@portabletext/types";
+import type { PortableTextBlock, TypedObject } from "@portabletext/types";
 
 const components: PortableTextComponents = {
   block: {
@@ -64,7 +64,7 @@ const components: PortableTextComponents = {
 };
 
 interface LessonContentProps {
-  content: PortableTextBlock[] | null | undefined;
+  content: TypedObject[] | null | undefined;
 }
 
 export function LessonContent({ content }: LessonContentProps) {
@@ -78,4 +78,3 @@ export function LessonContent({ content }: LessonContentProps) {
     </div>
   );
 }
-

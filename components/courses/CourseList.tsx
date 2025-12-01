@@ -3,30 +3,20 @@
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { CourseCard, type CourseCardProps } from "./CourseCard";
+import { CourseCard } from "./CourseCard";
 import { TierFilterTabs, type TierFilter } from "./TierFilterTabs";
+import { useUserTier, hasTierAccess } from "@/lib/hooks/use-user-tier";
 import type { Tier } from "@/lib/constants";
+import type { DASHBOARD_COURSES_QUERYResult } from "@/sanity.types";
 
-export interface CourseListCourse {
-  _id: string;
-  title: string | null;
-  description?: string | null;
-  tier: Tier | null;
-  thumbnail?: {
-    asset?: {
-      url: string | null;
-    } | null;
-  } | null;
-  moduleCount?: number | null;
-  lessonCount?: number | null;
-}
+// Infer course type from Sanity query result
+export type CourseListCourse = DASHBOARD_COURSES_QUERYResult[number];
 
 interface CourseListProps {
   courses: CourseListCourse[];
   showFilters?: boolean;
   showSearch?: boolean;
   emptyMessage?: string;
-  userTier?: Tier | null;
 }
 
 export function CourseList({
@@ -34,8 +24,8 @@ export function CourseList({
   showFilters = true,
   showSearch = true,
   emptyMessage = "No courses found",
-  userTier = "free",
 }: CourseListProps) {
+  const userTier = useUserTier();
   const [tierFilter, setTierFilter] = useState<TierFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -60,20 +50,6 @@ export function CourseList({
       return true;
     });
   }, [courses, tierFilter, searchQuery]);
-
-  // Determine if a course is locked based on user tier
-  const isCourseLocked = (courseTier: Tier | null): boolean => {
-    if (!courseTier || courseTier === "free") return false;
-    if (!userTier) return true; // No user tier means they can only access free content
-
-    const tierHierarchy: Record<Tier, number> = {
-      free: 0,
-      pro: 1,
-      ultra: 2,
-    };
-
-    return tierHierarchy[courseTier] > tierHierarchy[userTier];
-  };
 
   return (
     <div className="space-y-6">
@@ -115,7 +91,7 @@ export function CourseList({
               thumbnail={course.thumbnail}
               moduleCount={course.moduleCount}
               lessonCount={course.lessonCount}
-              isLocked={isCourseLocked(course.tier)}
+              isLocked={!hasTierAccess(userTier, course.tier)}
             />
           ))}
         </div>
@@ -142,4 +118,3 @@ export function CourseList({
     </div>
   );
 }
-

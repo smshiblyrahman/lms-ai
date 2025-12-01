@@ -16,7 +16,10 @@ export default async function DashboardPage() {
   }
 
   const [{ data: courses }, userTier] = await Promise.all([
-    sanityFetch({ query: DASHBOARD_COURSES_QUERY }),
+    sanityFetch({
+      query: DASHBOARD_COURSES_QUERY,
+      params: { userId: user.id },
+    }),
     getUserTier(),
   ]);
 
@@ -52,22 +55,24 @@ export default async function DashboardPage() {
       <main className="relative z-10 px-6 lg:px-12 py-12 max-w-7xl mx-auto">
         {/* Welcome Header */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 mb-6">
-            <Sparkles className="w-4 h-4 text-violet-400" />
-            <span className="text-sm text-violet-300">
-              {userTier === "ultra"
-                ? "Ultra Member"
-                : userTier === "pro"
-                  ? "Pro Member"
-                  : "Free Member"}
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight">
+              Welcome back,{" "}
+              <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
+                {firstName}
+              </span>
+            </h1>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 shrink-0">
+              <Sparkles className="w-4 h-4 text-violet-400" />
+              <span className="text-sm text-violet-300">
+                {userTier === "ultra"
+                  ? "Ultra Member"
+                  : userTier === "pro"
+                    ? "Pro Member"
+                    : "Free Member"}
+              </span>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-            Welcome back,{" "}
-            <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              {firstName}
-            </span>
-          </h1>
           <p className="text-lg text-zinc-400 max-w-2xl">
             Pick up where you left off or discover something new. Your learning
             journey continues here.
@@ -125,7 +130,6 @@ export default async function DashboardPage() {
           <h2 className="text-2xl font-bold mb-6">All Courses</h2>
           <CourseList
             courses={courses}
-            userTier={userTier}
             showFilters
             showSearch
             emptyMessage="No courses available yet. Check back soon!"

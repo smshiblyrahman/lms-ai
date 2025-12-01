@@ -1,15 +1,9 @@
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { Header } from "@/components/Header";
-import {
-  CourseHero,
-  ModuleAccordion,
-  CourseCompleteButton,
-  GatedFallback,
-} from "@/components/courses";
+import { CourseContent } from "@/components/courses";
 import { sanityFetch } from "@/sanity/lib/live";
 import { COURSE_WITH_MODULES_QUERY } from "@/sanity/lib/queries";
-import { hasAccessToTier } from "@/lib/course-access";
 
 interface CoursePageProps {
   params: Promise<{ id: string }>;
@@ -21,21 +15,12 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   const { data: course } = await sanityFetch({
     query: COURSE_WITH_MODULES_QUERY,
-    params: { id, userId: userId ?? "" },
+    params: { id, userId: userId },
   });
 
   if (!course) {
     notFound();
   }
-
-  const hasAccess = await hasAccessToTier(course.tier);
-
-  // Stats from GROQ query
-  const totalLessons = course.lessonCount ?? 0;
-  const completedLessons = course.completedLessonCount ?? 0;
-  const isCourseCompleted = userId
-    ? (course.completedBy?.includes(userId) ?? false)
-    : false;
 
   return (
     <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
@@ -65,37 +50,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
       {/* Main Content */}
       <main className="relative z-10 px-6 lg:px-12 py-12 max-w-7xl mx-auto">
-        <CourseHero
-          title={course.title}
-          description={course.description}
-          tier={course.tier}
-          thumbnail={course.thumbnail}
-          category={course.category}
-          moduleCount={course.moduleCount}
-          lessonCount={course.lessonCount}
-        />
-
-        {hasAccess ? (
-          <div className="space-y-8">
-            {/* Course completion progress */}
-            {userId && (
-              <CourseCompleteButton
-                courseId={course._id}
-                isCompleted={isCourseCompleted}
-                completedLessons={completedLessons}
-                totalLessons={totalLessons}
-              />
-            )}
-
-            <ModuleAccordion
-              modules={course.modules}
-              userId={userId}
-              courseId={course._id}
-            />
-          </div>
-        ) : (
-          <GatedFallback requiredTier={course.tier} />
-        )}
+        <CourseContent course={course} userId={userId} />
       </main>
     </div>
   );

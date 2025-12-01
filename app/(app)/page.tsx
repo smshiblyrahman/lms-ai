@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
+import { CourseCard } from "@/components/courses";
 import {
   ArrowRight,
   Play,
@@ -12,25 +12,11 @@ import {
   CheckCircle2,
   Star,
   Users,
-  Layers,
   Trophy,
   Sparkles,
 } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/live";
 import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries";
-
-// Tier color mappings for course cards
-const TIER_GRADIENTS: Record<string, string> = {
-  free: "from-emerald-500 to-teal-600",
-  pro: "from-blue-500 to-indigo-600",
-  ultra: "from-violet-500 to-purple-600",
-};
-
-const TIER_BADGE_COLORS: Record<string, string> = {
-  free: "bg-emerald-500/90",
-  pro: "bg-violet-500/90",
-  ultra: "bg-cyan-500/90",
-};
 
 export default async function Home() {
   // Fetch featured courses and stats from Sanity
@@ -258,58 +244,18 @@ export default async function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {courses.map((course) => {
-              const tier = course.tier ?? "free";
-              const gradient = TIER_GRADIENTS[tier];
-              const badgeColor = TIER_BADGE_COLORS[tier];
-
-              return (
-                <div
-                  key={course._id}
-                  className="group relative rounded-2xl bg-zinc-900/50 border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-all duration-300"
-                >
-                  {/* Course header */}
-                  <div
-                    className={`h-32 bg-gradient-to-br ${gradient} flex items-center justify-center relative overflow-hidden`}
-                  >
-                    {course.thumbnail?.asset?.url ? (
-                      <Image
-                        src={course.thumbnail.asset.url}
-                        alt={course.title ?? "Course thumbnail"}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="text-6xl opacity-50">📚</div>
-                    )}
-                    <div className="absolute inset-0 bg-black/20" />
-                    {/* Tier badge */}
-                    <div
-                      className={`absolute top-3 right-3 px-2 py-1 rounded-md text-xs font-semibold ${badgeColor} text-white`}
-                    >
-                      {tier.toUpperCase()}
-                    </div>
-                  </div>
-
-                  {/* Course content */}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-violet-400 transition-colors">
-                      {course.title}
-                    </h3>
-                    <div className="flex items-center gap-4 text-sm text-zinc-400">
-                      <span className="flex items-center gap-1">
-                        <Layers className="w-4 h-4" />
-                        {course.moduleCount ?? 0} modules
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Play className="w-4 h-4" />
-                        {course.lessonCount ?? 0} lessons
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {courses.map((course) => (
+              <CourseCard
+                key={course._id}
+                id={course._id}
+                title={course.title}
+                description={course.description}
+                tier={course.tier}
+                thumbnail={course.thumbnail}
+                moduleCount={course.moduleCount}
+                lessonCount={course.lessonCount}
+              />
+            ))}
           </div>
 
           <div className="text-center mt-10">

@@ -1,6 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-
-export type Tier = "free" | "pro" | "ultra";
+import type { Tier } from "@/lib/constants";
 
 /**
  * Check if the current user has access to content at the specified tier.

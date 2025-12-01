@@ -2,23 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Play, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { TIER_STYLES, type Tier } from "@/lib/constants";
+import { TIER_STYLES } from "@/lib/constants";
+import type { COURSE_WITH_MODULES_QUERYResult } from "@/sanity.types";
 
-interface CourseHeroProps {
-  title: string | null;
-  description: string | null;
-  tier: Tier | null;
-  thumbnail?: {
-    asset?: {
-      url: string | null;
-    } | null;
-  } | null;
-  category?: {
-    title: string | null;
-  } | null;
-  moduleCount?: number | null;
-  lessonCount?: number | null;
-}
+// Infer props from Sanity query result
+type Course = NonNullable<COURSE_WITH_MODULES_QUERYResult>;
+
+type CourseHeroProps = Pick<
+  Course,
+  "title" | "description" | "tier" | "thumbnail" | "category" | "moduleCount" | "lessonCount"
+>;
 
 export function CourseHero({
   title,

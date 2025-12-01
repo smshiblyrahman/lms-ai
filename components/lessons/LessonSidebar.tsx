@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Circle, Play, ChevronDown } from "lucide-react";
+import { CheckCircle2, Circle, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Accordion,
@@ -9,17 +9,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import type { LESSON_BY_ID_QUERYResult } from "@/sanity.types";
 
-interface Lesson {
-  _id: string;
-  title: string | null;
-}
-
-interface Module {
-  _id: string;
-  title: string | null;
-  lessons: Lesson[] | null;
-}
+// Infer types from Sanity query result
+type CourseModules = NonNullable<NonNullable<LESSON_BY_ID_QUERYResult>["course"]>["modules"];
+type Module = NonNullable<CourseModules>[number];
+type Lesson = NonNullable<Module["lessons"]>[number];
 
 interface LessonSidebarProps {
   courseId: string;

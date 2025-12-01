@@ -80,6 +80,7 @@ export const DASHBOARD_COURSES_QUERY = defineQuery(`*[
   description,
   tier,
   featured,
+  completedBy,
   thumbnail {
     asset-> {
       _id,
@@ -89,6 +90,11 @@ export const DASHBOARD_COURSES_QUERY = defineQuery(`*[
   category-> {
     _id,
     title
+  },
+  modules[]-> {
+    lessons[]-> {
+      completedBy
+    }
   },
   "moduleCount": count(modules),
   "lessonCount": count(modules[]->lessons[])
@@ -133,7 +139,7 @@ export const COURSE_WITH_MODULES_QUERY = defineQuery(`*[
   completedBy,
   "moduleCount": count(modules),
   "lessonCount": count(modules[]->lessons[]),
-  "completedLessonCount": count(modules[]->lessons[]->completedBy[@ == $userId])
+  "completedLessonCount": count(modules[]->lessons[]->completedBy[@==$userId])
 }`);
 
 export const LESSON_BY_ID_QUERY = defineQuery(`*[

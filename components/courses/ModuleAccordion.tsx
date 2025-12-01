@@ -9,38 +9,20 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
+import type { COURSE_WITH_MODULES_QUERYResult } from "@/sanity.types";
 
-interface Lesson {
-  _id: string;
-  title: string | null;
-  description?: string | null;
-  completedBy?: string[] | null;
-  video?: {
-    asset?: {
-      playbackId?: string | null;
-    } | null;
-  } | null;
-}
-
-interface Module {
-  _id: string;
-  title: string | null;
-  description?: string | null;
-  completedBy?: string[] | null;
-  lessons?: Lesson[] | null;
-}
+// Infer types from Sanity query result
+type Module = NonNullable<
+  NonNullable<COURSE_WITH_MODULES_QUERYResult>["modules"]
+>[number];
+type Lesson = NonNullable<Module["lessons"]>[number];
 
 interface ModuleAccordionProps {
   modules: Module[] | null;
   userId?: string | null;
-  courseId: string;
 }
 
-export function ModuleAccordion({
-  modules,
-  userId,
-  courseId,
-}: ModuleAccordionProps) {
+export function ModuleAccordion({ modules, userId }: ModuleAccordionProps) {
   if (!modules || modules.length === 0) {
     return (
       <div className="text-center py-12 text-zinc-500">

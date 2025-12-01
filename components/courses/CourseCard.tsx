@@ -2,22 +2,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Lock, Play, Layers } from "lucide-react";
+import { Lock, Play, Layers, CheckCircle2 } from "lucide-react";
 import { TIER_STYLES, type Tier } from "@/lib/constants";
+import { Progress } from "@/components/ui/progress";
+import type { DASHBOARD_COURSES_QUERYResult } from "@/sanity.types";
 
-export interface CourseCardProps {
+// Infer Sanity course fields from query result
+type SanityCourse = DASHBOARD_COURSES_QUERYResult[number];
+
+export interface CourseCardProps
+  extends Pick<
+    SanityCourse,
+    "title" | "description" | "tier" | "thumbnail" | "moduleCount" | "lessonCount"
+  > {
   id: string;
-  title: string | null;
-  description?: string | null;
-  tier: Tier | null;
-  thumbnail?: {
-    asset?: {
-      url: string | null;
-    } | null;
-  } | null;
-  moduleCount?: number | null;
-  lessonCount?: number | null;
+  completedLessonCount?: number | null;
+  isCompleted?: boolean;
   isLocked?: boolean;
+  showProgress?: boolean;
 }
 
 export function CourseCard({
@@ -28,10 +30,16 @@ export function CourseCard({
   thumbnail,
   moduleCount,
   lessonCount,
+  completedLessonCount = 0,
+  isCompleted = false,
   isLocked = false,
+  showProgress = false,
 }: CourseCardProps) {
   const displayTier = tier ?? "free";
   const styles = TIER_STYLES[displayTier];
+  const totalLessons = lessonCount ?? 0;
+  const completed = completedLessonCount ?? 0;
+  const progressPercent = totalLessons > 0 ? (completed / totalLessons) * 100 : 0;
 
   return (
     <Link href={`/courses/${id}`} className="group block">
@@ -52,12 +60,19 @@ export function CourseCard({
           )}
           <div className="absolute inset-0 bg-black/20" />
 
-          {/* Tier badge */}
-          <div
-            className={`absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide ${styles.badge}`}
-          >
-            {displayTier}
-          </div>
+          {/* Tier badge or Completed badge */}
+          {isCompleted ? (
+            <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/90 text-white">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Completed
+            </div>
+          ) : (
+            <div
+              className={`absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide ${styles.badge}`}
+            >
+              {displayTier}
+            </div>
+          )}
 
           {/* Locked overlay */}
           {isLocked && (
@@ -96,6 +111,22 @@ export function CourseCard({
               {lessonCount ?? 0} lessons
             </span>
           </div>
+
+          {/* Progress bar */}
+          {showProgress && totalLessons > 0 && (
+            <div className="mt-4 pt-4 border-t border-zinc-800">
+              <div className="flex items-center justify-between text-sm mb-2">
+                <span className="text-zinc-400">
+                  {completed}/{totalLessons} lessons
+                </span>
+                <span className="text-zinc-500">{Math.round(progressPercent)}%</span>
+              </div>
+              <Progress
+                value={progressPercent}
+                className="h-2 bg-zinc-800 [&>div]:bg-emerald-500"
+              />
+            </div>
+          )}
         </div>
       </div>
     </Link>
