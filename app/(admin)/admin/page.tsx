@@ -106,86 +106,6 @@ const STAT_CARDS = [
   },
 ];
 
-const QUICK_ACTIONS = [
-  {
-    documentType: "course",
-    basePath: "/admin/courses",
-    label: "Create Course",
-    icon: BookOpen,
-    color: "text-violet-400",
-  },
-  {
-    documentType: "module",
-    basePath: "/admin/modules",
-    label: "Create Module",
-    icon: Layers,
-    color: "text-cyan-400",
-  },
-  {
-    documentType: "lesson",
-    basePath: "/admin/lessons",
-    label: "Create Lesson",
-    icon: PlayCircle,
-    color: "text-emerald-400",
-  },
-  {
-    documentType: "category",
-    basePath: "/admin/categories",
-    label: "Create Category",
-    icon: Tag,
-    color: "text-amber-400",
-  },
-];
-
-function QuickActionButton({
-  documentType,
-  basePath,
-  label,
-  icon: Icon,
-  color,
-}: (typeof QUICK_ACTIONS)[number]) {
-  const router = useRouter();
-  const [isCreating, startTransition] = useTransition();
-  const apply = useApplyDocumentActions();
-
-  const handleCreate = () => {
-    startTransition(async () => {
-      const result = await apply(
-        createDocument({
-          documentType,
-        }),
-      );
-      const created = Array.isArray(result) ? result[0] : result;
-      if (created?.id) {
-        router.push(`${basePath}/${created.id}`);
-      }
-    });
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={handleCreate}
-      disabled={isCreating}
-      className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:bg-zinc-800/50 hover:border-zinc-700 transition-all cursor-pointer group text-left w-full disabled:opacity-50"
-    >
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-800 group-hover:bg-zinc-700 transition-colors">
-          <Icon className={`h-5 w-5 ${color}`} />
-        </div>
-        <span className="font-medium text-zinc-300 group-hover:text-white transition-colors">
-          {isCreating ? "Creating..." : label}
-        </span>
-        {isCreating ? (
-          <Loader2 className="h-4 w-4 text-zinc-400 ml-auto animate-spin" />
-        ) : (
-          <Plus className="h-4 w-4 text-zinc-600 ml-auto group-hover:text-zinc-400 transition-colors" />
-        )}
-      </div>
-    </button>
-  );
-}
-
 export default function AdminDashboard() {
   return (
     <div className="space-y-8">
@@ -204,16 +124,6 @@ export default function AdminDashboard() {
         {STAT_CARDS.map((card) => (
           <StatCard key={card.documentType} {...card} />
         ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div>
-        <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-          {QUICK_ACTIONS.map((action) => (
-            <QuickActionButton key={action.documentType} {...action} />
-          ))}
-        </div>
       </div>
     </div>
   );

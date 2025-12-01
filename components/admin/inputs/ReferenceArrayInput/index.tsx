@@ -5,8 +5,6 @@ import {
   useDocument,
   useEditDocument,
   useDocuments,
-  useDocumentProjection,
-  type DocumentHandle,
 } from "@sanity/sdk-react";
 import {
   DndContext,
@@ -21,10 +19,8 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -35,25 +31,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card } from "@/components/ui/card";
-import { X, Plus, GripVertical, ExternalLink } from "lucide-react";
-import Link from "next/link";
-
-interface ReferenceArrayInputProps {
-  documentId: string;
-  documentType: string;
-  projectId: string;
-  dataset: string;
-  path: string;
-  label: string;
-  referenceType: string;
-}
-
-interface SanityReference {
-  _type: "reference";
-  _ref: string;
-  _key?: string;
-}
+import { X, Plus, GripVertical } from "lucide-react";
+import { SortableReferenceItem } from "./SortableReferenceItem";
+import { AvailableDocumentOption } from "./AvailableDocumentOption";
+import type { ReferenceArrayInputProps, SanityReference } from "./types";
 
 function ReferenceArrayInputFallback({ label }: { label: string }) {
   return (
@@ -62,100 +43,6 @@ function ReferenceArrayInputFallback({ label }: { label: string }) {
       <Skeleton className="h-24 w-full bg-zinc-800" />
     </div>
   );
-}
-
-// Sortable reference item component
-function SortableReferenceItem({
-  id,
-  documentId,
-  documentType,
-  projectId,
-  dataset,
-  onRemove,
-}: {
-  id: string;
-  documentId: string;
-  documentType: string;
-  projectId: string;
-  dataset: string;
-  onRemove: () => void;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  const { data } = useDocumentProjection({
-    documentId,
-    documentType,
-    projectId,
-    dataset,
-    projection: "{ title }",
-  });
-
-  const title = (data as { title?: string })?.title || "Untitled";
-  const editUrl = `/admin/${documentType}s/${documentId}`;
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`flex items-center gap-2 p-3 bg-zinc-800/50 border border-zinc-700 rounded-lg ${
-        isDragging ? "opacity-50 shadow-lg" : ""
-      }`}
-    >
-      <button
-        type="button"
-        className="cursor-grab active:cursor-grabbing touch-none text-zinc-500 hover:text-zinc-300"
-        {...attributes}
-        {...listeners}
-      >
-        <GripVertical className="h-4 w-4" />
-      </button>
-      <Link
-        href={editUrl}
-        className="text-sm text-zinc-300 flex-1 hover:text-violet-400 hover:underline transition-colors flex items-center gap-2"
-      >
-        {title}
-        <ExternalLink className="h-3 w-3 opacity-50" />
-      </Link>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-6 w-6 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700"
-        onClick={onRemove}
-      >
-        <X className="h-4 w-4" />
-      </Button>
-    </div>
-  );
-}
-
-// Component to show an available document option
-function AvailableDocumentOption({
-  documentId,
-  documentType,
-  projectId,
-  dataset,
-}: DocumentHandle) {
-  const { data } = useDocumentProjection({
-    documentId,
-    documentType,
-    projectId,
-    dataset,
-    projection: "{ title }",
-  });
-
-  return <>{(data as { title?: string })?.title || "Untitled"}</>;
 }
 
 function ReferenceArrayInputField({
@@ -213,7 +100,7 @@ function ReferenceArrayInputField({
 
       if (oldIndex !== -1 && newIndex !== -1) {
         const newRefs = arrayMove(refs, oldIndex, newIndex);
-        editRefs(newRefs);
+        editRefs(newRefs as SanityReference[]);
       }
     }
   };
@@ -227,12 +114,12 @@ function ReferenceArrayInputField({
       _key: crypto.randomUUID(),
     };
 
-    editRefs([...refs, newRef]);
+    editRefs([...refs, newRef] as SanityReference[]);
     setSelectedToAdd("");
   };
 
   const handleRemove = (refId: string) => {
-    editRefs(refs.filter((r) => r._ref !== refId));
+    editRefs(refs.filter((r) => r._ref !== refId) as SanityReference[]);
   };
 
   // Get sortable IDs (prefer _key, fallback to _ref)
@@ -296,7 +183,11 @@ function ReferenceArrayInputField({
             </SelectTrigger>
             <SelectContent className="bg-zinc-800 border-zinc-700">
               {availableToAdd.map((doc) => (
-                <SelectItem key={doc.documentId} value={doc.documentId} className="text-zinc-300 focus:bg-zinc-700 focus:text-white">
+                <SelectItem
+                  key={doc.documentId}
+                  value={doc.documentId}
+                  className="text-zinc-300 focus:bg-zinc-700 focus:text-white"
+                >
                   <Suspense fallback={doc.documentId}>
                     <AvailableDocumentOption {...doc} />
                   </Suspense>
@@ -304,7 +195,12 @@ function ReferenceArrayInputField({
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={handleAdd} disabled={!selectedToAdd} size="icon" className="bg-violet-600 hover:bg-violet-500 text-white">
+          <Button
+            onClick={handleAdd}
+            disabled={!selectedToAdd}
+            size="icon"
+            className="bg-violet-600 hover:bg-violet-500 text-white"
+          >
             <Plus className="h-4 w-4" />
           </Button>
         </div>
@@ -320,3 +216,6 @@ export function ReferenceArrayInput(props: ReferenceArrayInputProps) {
     </Suspense>
   );
 }
+
+export type { ReferenceArrayInputProps } from "./types";
+

@@ -76,7 +76,9 @@ function SlugInputField({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={path} className="text-zinc-300">{label}</Label>
+      <Label htmlFor={path} className="text-zinc-300">
+        {label}
+      </Label>
       <div className="flex gap-2">
         <div className="relative flex-1">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">

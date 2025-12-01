@@ -81,17 +81,26 @@ function SelectInputField({
   // Use Select dropdown for more than 4 options
   return (
     <div className="space-y-2">
-      <Label htmlFor={path} className="text-zinc-300">{label}</Label>
+      <Label htmlFor={path} className="text-zinc-300">
+        {label}
+      </Label>
       <Select
         value={(value as string) ?? ""}
         onValueChange={(newValue) => editValue(newValue)}
       >
-        <SelectTrigger id={path} className="bg-zinc-800/50 border-zinc-700 text-zinc-300">
+        <SelectTrigger
+          id={path}
+          className="bg-zinc-800/50 border-zinc-700 text-zinc-300"
+        >
           <SelectValue placeholder={placeholder ?? "Select an option"} />
         </SelectTrigger>
         <SelectContent className="bg-zinc-800 border-zinc-700">
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value} className="text-zinc-300 focus:bg-zinc-700 focus:text-white">
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="text-zinc-300 focus:bg-zinc-700 focus:text-white"
+            >
               {option.label}
             </SelectItem>
           ))}
