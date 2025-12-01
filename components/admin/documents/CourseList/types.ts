@@ -8,11 +8,8 @@ export interface CourseData {
   description?: string;
   tier?: "free" | "pro" | "ultra";
   thumbnail?: {
-    asset?: {
-      url?: string;
-    };
-  };
+    url?: string;
+  } | null;
   moduleCount?: number;
   lessonCount?: number;
 }
-

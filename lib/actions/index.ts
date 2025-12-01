@@ -2,4 +2,5 @@
 export { toggleLessonCompletion } from "./lessons";
 export { toggleCourseCompletion } from "./courses";
 export { getMuxSignedToken } from "./mux";
+export { uploadImage, deleteImage } from "./images";
 

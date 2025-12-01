@@ -34,8 +34,8 @@ export function AdminCourseItem({
       description={course?.description ?? null}
       tier={course?.tier ?? null}
       thumbnail={
-        course?.thumbnail
-          ? { asset: { _id: "", url: course.thumbnail.asset?.url ?? null } }
+        course?.thumbnail?.url
+          ? { asset: { _id: "", url: course.thumbnail.url } }
           : null
       }
       moduleCount={course?.moduleCount ?? null}
@@ -43,4 +43,3 @@ export function AdminCourseItem({
     />
   );
 }
-
