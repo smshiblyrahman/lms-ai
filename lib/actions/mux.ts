@@ -31,6 +31,16 @@ export async function createMuxUploadUrl(): Promise<CreateUploadResult> {
       new_asset_settings: {
         playback_policy: ["signed"],
         video_quality: "plus",
+        inputs: [
+          {
+            generated_subtitles: [
+              {
+                language_code: "en",
+                name: "English CC",
+              },
+            ],
+          },
+        ],
       },
     });
 

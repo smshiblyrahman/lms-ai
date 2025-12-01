@@ -85,6 +85,7 @@ function DocumentActionsContent({
       {/* Discard changes - only when in draft AND published version exists */}
       {isDraft && hasPublishedVersion && (
         <button
+          type="button"
           onClick={() => {
             const confirmed = window.confirm(
               "Discard all changes? This will revert to the published version.",
@@ -107,6 +108,7 @@ function DocumentActionsContent({
       {/* Unpublish - only when viewing published version (not draft) */}
       {!isDraft && (
         <button
+          type="button"
           onClick={() =>
             apply(
               unpublishDocument({
@@ -125,6 +127,7 @@ function DocumentActionsContent({
       {/* Publish - only when in draft mode */}
       {isDraft && (
         <button
+          type="button"
           onClick={() =>
             apply(
               publishDocument({
@@ -133,7 +136,7 @@ function DocumentActionsContent({
               }),
             )
           }
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-lg shadow-lg shadow-violet-500/20 transition-all"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-lg shadow-lg shadow-violet-500/20 transition-all"
         >
           <Upload className="h-4 w-4" />
           Publish
@@ -142,6 +145,7 @@ function DocumentActionsContent({
 
       {/* Delete button */}
       <button
+        type="button"
         onClick={() => {
           const confirmed = window.confirm(
             "Delete this document permanently? This cannot be undone.",
