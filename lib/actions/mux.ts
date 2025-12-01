@@ -1,7 +1,7 @@
 "use server";
 
-import jwt from "jsonwebtoken";
 import Mux from "@mux/mux-node";
+import jwt from "jsonwebtoken";
 import { formatSigningKey } from "@/lib/mux";
 import { writeClient } from "@/sanity/lib/client";
 
