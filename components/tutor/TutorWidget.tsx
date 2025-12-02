@@ -11,10 +11,12 @@ function TutorPanel() {
   return (
     <>
       {/* Backdrop */}
-      <div
+      <button
+        type="button"
+        aria-label="Close chat"
         className={`
           fixed inset-0 z-40 bg-black/40 backdrop-blur-sm
-          transition-opacity duration-300
+          transition-opacity duration-300 cursor-default
           ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}
         `}
         onClick={closeChat}
