@@ -116,7 +116,9 @@ export default async function DashboardPage() {
                     Upgrade to {userTier === "free" ? "Pro" : "Ultra"}
                   </p>
                   <p className="text-sm text-zinc-400">
-                    Unlock more courses & features
+                    {userTier === "pro"
+                      ? "Get AI Learning Assistant & exclusive content"
+                      : "Unlock more courses & features"}
                   </p>
                 </div>
                 <ArrowRight className="w-5 h-5 text-violet-400 group-hover:translate-x-1 transition-transform" />

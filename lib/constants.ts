@@ -84,6 +84,7 @@ export const TIER_FEATURES = [
     color: "cyan",
     features: [
       "Everything in Pro",
+      "AI Learning Assistant",
       "Exclusive Ultra-only content",
       "Monthly 1-on-1 sessions",
       "Private Discord channel",

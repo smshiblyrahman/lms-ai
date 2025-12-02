@@ -218,12 +218,13 @@ export default async function Home() {
                 gradient: "from-cyan-400 to-blue-600",
                 bgGlow: "bg-cyan-500/10",
                 borderColor: "border-cyan-500/20",
-                description: "Unlock the real gems - exclusive masterclasses",
+                description:
+                  "Unlock the real gems - AI tutor & exclusive content",
                 features: [
                   "Everything in Pro",
+                  "AI Learning Assistant",
                   "Exclusive content",
                   "1-on-1 sessions",
-                  "Private Discord",
                 ],
               },
             ].map((plan) => (

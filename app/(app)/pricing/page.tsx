@@ -55,7 +55,8 @@ export default function PricingPage() {
           </h1>
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
             Start free, upgrade when you&apos;re ready. Unlock Pro for advanced
-            content or go Ultra for exclusive masterclasses and 1-on-1 access.
+            content or go Ultra for AI-powered learning, exclusive
+            masterclasses, and 1-on-1 access.
           </p>
         </div>
 
