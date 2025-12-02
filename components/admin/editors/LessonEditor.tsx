@@ -10,6 +10,7 @@ import { DocumentActions } from "@/components/admin/documents/DocumentActions";
 import { OpenInStudio } from "@/components/admin/documents/OpenInStudio";
 import { SlugInput } from "@/components/admin/inputs/SlugInput";
 import { MuxVideoInput } from "@/components/admin/inputs/MuxVideoInput";
+import { PortableTextInput } from "@/components/admin/inputs/PortableTextInput";
 
 interface LessonEditorProps {
   documentId: string;
@@ -89,6 +90,18 @@ function LessonEditorContent({
               path="slug"
               label="URL Slug"
               sourceField="title"
+            />
+          </div>
+
+          {/* Lesson Content - Rich Text Editor */}
+          <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6">
+            <h3 className="text-sm font-medium text-zinc-400 mb-4">
+              Lesson Content
+            </h3>
+            <PortableTextInput
+              {...handle}
+              path="content"
+              label="Content"
             />
           </div>
         </div>

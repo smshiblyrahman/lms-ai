@@ -69,12 +69,7 @@ const components: PortableTextComponents = {
         return null;
       }
 
-      const imageUrl = urlFor(value)
-        .width(1200)
-        .height(675)
-        .fit("max")
-        .auto("format")
-        .url();
+      const imageUrl = urlFor(value).width(1200).auto("format").url();
 
       return (
         <figure className="my-6">
@@ -84,7 +79,6 @@ const components: PortableTextComponents = {
               alt={value.alt || "Lesson image"}
               fill
               className="object-contain"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
             />
           </div>
           {value.caption && (
