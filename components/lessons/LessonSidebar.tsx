@@ -38,7 +38,7 @@ export function LessonSidebar({
 
   // Find which module contains the current lesson
   const currentModuleId = modules.find((m) =>
-    m.lessons?.some((l) => l._id === currentLessonId)
+    m.lessons?.some((l) => l._id === currentLessonId),
   )?._id;
 
   return (
@@ -68,7 +68,7 @@ export function LessonSidebar({
               const lessonCount = module.lessons?.length ?? 0;
               const completedCount =
                 module.lessons?.filter((l) =>
-                  completedLessonIds.includes(l._id)
+                  completedLessonIds.includes(l._id),
                 ).length ?? 0;
 
               return (
@@ -103,7 +103,7 @@ export function LessonSidebar({
                       {module.lessons?.map((lesson, lessonIndex) => {
                         const isActive = lesson._id === currentLessonId;
                         const isCompleted = completedLessonIds.includes(
-                          lesson._id
+                          lesson._id,
                         );
 
                         return (
@@ -114,7 +114,7 @@ export function LessonSidebar({
                               "flex items-center gap-2.5 pl-2 pr-3 py-2 rounded-lg text-sm transition-colors",
                               isActive
                                 ? "bg-violet-500/20 text-violet-300"
-                                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50",
                             )}
                           >
                             {isCompleted ? (
@@ -141,4 +141,3 @@ export function LessonSidebar({
     </div>
   );
 }
-

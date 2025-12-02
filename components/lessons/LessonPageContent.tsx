@@ -23,7 +23,7 @@ export function LessonPageContent({ lesson, userId }: LessonPageContentProps) {
   // This allows users to access lessons if they have access to ANY course containing the lesson
   const courses = lesson.courses ?? [];
   const accessibleCourse = courses.find((course) =>
-    hasTierAccess(userTier, course.tier)
+    hasTierAccess(userTier, course.tier),
   );
   const hasAccess = !!accessibleCourse;
 
